@@ -7,18 +7,21 @@
 		font-family: GT Sectra Bold;
 		font-weight: 700;
 		src: url(/fonts/GT-Sectra-Fine-Bold.woff) format('woff');
+		font-display: optional;
 	}
 
 	@font-face {
 		font-family: GT Sectra Medium;
 		font-weight: 500;
 		src: url(/fonts/GT-Sectra-Fine-Medium.woff) format('woff');
+		font-display: optional;
 	}
 
 	@font-face {
 		font-family: GT Sectra Regular;
 		font-weight: 400;
 		src: url(/fonts/GT-Sectra-Fine-Regular.woff) format('woff');
+		font-display: optional;
 	}
 
 	h1 {
