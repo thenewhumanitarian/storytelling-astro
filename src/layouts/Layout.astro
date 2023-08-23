@@ -20,6 +20,10 @@ const { title } = Astro.props as Props
 		<link rel='preconnect' href='https://fonts.googleapis.com' />
 		<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
 		<link href='https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap' rel='stylesheet' />
+		<!--  Importing GT Sectra font for pre-loading -->
+		<link rel='preload' as='font' href='/fonts/GT-Sectra-Fine-Bold.woff2' />
+		<link rel='preload' as='font' href='/fonts/GT-Sectra-Fine-Medium.woff2' />
+		<link rel='preload' as='font' href='/fonts/GT-Sectra-Fine-Regular.woff2' />
 		<title>{title || 'The New Humanitarian'}</title>
 		<!-- To do: Google Tag Manager -->
 	</head>
