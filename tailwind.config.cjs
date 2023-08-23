@@ -14,7 +14,7 @@ module.exports = {
 				burgundy: '#9f3e52',
 			},
 			fontFamily: {
-				body: ['Roboto', 'Open Sans', 'ui-sans-serif'],
+				body: ['Roboto Regular', 'Open Sans', 'ui-sans-serif'],
 				title: ['GT Sectra Bold', 'ui-serif'],
 				serif: ['GT Sectra Bold', 'ui-serif'],
 			},

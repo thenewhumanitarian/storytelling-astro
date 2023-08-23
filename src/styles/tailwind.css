@@ -5,26 +5,26 @@
 	/* Maybe load Roboto here, too? To make it load quicker? */
 
 	@font-face {
-		font-family: 'Roboto Regular';
+		font-family: Roboto Regular;
 		font-style: normal;
 		font-weight: normal;
-		src: url('Roboto Regular'), url('/fonts/Roboto-Regular.woff') format('woff');
+		src: url('/fonts/Roboto-Regular.woff') format('woff');
 		font-display: block;
 	}
 
 	@font-face {
-		font-family: 'Roboto Italic';
+		font-family: Roboto Italic;
 		font-style: normal;
 		font-weight: normal;
-		src: url('Roboto Italic'), url('/fonts/Roboto-Italic.woff') format('woff');
+		src: url('/fonts/Roboto-Italic.woff') format('woff');
 		font-display: block;
 	}
 
 	@font-face {
-		font-family: 'Roboto Bold';
+		font-family: Roboto Bold;
 		font-style: normal;
 		font-weight: normal;
-		src: url('Roboto Bold'), url('/fonts/Roboto-Bold.woff') format('woff');
+		src: url('/fonts/Roboto-Bold.woff') format('woff');
 		font-display: block;
 	}
 
