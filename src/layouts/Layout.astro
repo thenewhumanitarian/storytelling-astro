@@ -1,5 +1,6 @@
 ---
 import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
 
 import '../styles/tailwind.css'
 import '../styles/global.css'
@@ -26,5 +27,6 @@ const { title } = Astro.props as Props
 		<!-- Main content -->
 		<slot />
 		<!-- Footer  -->
+		<Footer />
 	</body>
 </html>
