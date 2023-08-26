@@ -1,16 +1,13 @@
 ---
 export interface Props {
-	body: string
 	dark?: boolean
-	title: string
 }
 
-const { body, dark, title } = Astro.props as Props
+const { dark } = Astro.props as Props
 ---
 
 <div class=`card ${dark && 'dark'}`>
-	<h3>{title}</h3>
-	<p>{body}</p>
+	<slot />
 </div>
 
 <style>

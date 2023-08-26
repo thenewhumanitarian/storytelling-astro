@@ -18,7 +18,16 @@ const featuresArray = [
 
 <section class='features'>
 	<div class='container'>
-		{featuresArray.map(({ title, body }) => <Card body={body} title={title} />)}
+		{
+			featuresArray.map(({ title, body }) => (
+				<Card>
+					<>
+						<h3>{title}</h3>
+						<p>{body}</p>
+					</>
+				</Card>
+			))
+		}
 	</div>
 </section>
 
