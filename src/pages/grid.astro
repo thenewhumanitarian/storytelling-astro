@@ -9,7 +9,7 @@ const placeholderPhotos = await response.json()
 
 <script src='https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js' is:inline></script>
 
-<style>
+<style is:global>
 	* {
 		box-sizing: border-box;
 	}
@@ -54,7 +54,7 @@ const placeholderPhotos = await response.json()
 	.grid-item {
 		background: black;
 		background-size: cover;
-		background-position: 50%;
+		background-position: center center;
 		user-select: none;
 		pointer-events: none;
 		overflow: hidden;
@@ -62,6 +62,11 @@ const placeholderPhotos = await response.json()
 	.grid-item--title {
 		margin: 0;
 		box-decoration-break: clone !important;
+	}
+	@media screen and (max-width: 500px) {
+		.grid-item--title {
+			font-size: 1.2rem;
+		}
 	}
 </style>
 
@@ -84,6 +89,7 @@ const placeholderPhotos = await response.json()
 			this.setNewCard()
 			this.item.classList.add('grid-item')
 		}
+
 		setIndex(index) {
 			this.index = index
 			this.setNewCard()
@@ -102,13 +108,16 @@ const placeholderPhotos = await response.json()
 			this.title.style.background = '#000 none repeat scroll 0 0'
 			this.title.style.color = 'white'
 			this.title.style.lineHeight = 1.1
-			// this.title.style.padding = '0.5rem 0.75rem'
 			this.title.style.display = 'inline'
 			this.title.innerHTML = title
 			this.item.style.backgroundImage = `url(${image.thumbnailUrl})`
 			this.item.style.backgroundSize = 'cover'
+			this.item.style.backgroundPosition = 'center center'
+			this.item.style.lc = 'center center'
+			// this.title.style.padding = '0.5rem 0.75rem'
 		}
 	}
+
 	class Drag {
 		constructor(ele, handleDrag) {
 			this.dragging = false
@@ -125,6 +134,7 @@ const placeholderPhotos = await response.json()
 			ele.addEventListener('mouseup', this.onEnd.bind(this))
 			ele.addEventListener('mouseuot', this.onEnd.bind(this))
 		}
+
 		onStart(ev) {
 			ev = ev.type == 'touchstart' ? ev.touches[0] : ev
 
@@ -132,6 +142,7 @@ const placeholderPhotos = await response.json()
 			this.lastX = ev.clientX
 			this.lastY = ev.clientY
 		}
+
 		onMove(ev) {
 			if (!this.dragging) return
 
@@ -140,13 +151,14 @@ const placeholderPhotos = await response.json()
 			let yDelta = ev.clientY - this.lastY
 			let vel = Math.abs(xDelta * yDelta)
 			if (vel > 50) {
-				let v = { x: xDelta * 0.5, y: yDelta * 0.5 }
+				// let v = { x: xDelta * 0.5, y: yDelta * 0.5 } // Make it more snappy
+				let v = { x: xDelta * 0, y: yDelta * 0 }
 				if (this.anime) this.anime.pause()
 				this.anime = anime({
 					targets: v,
 					x: 0,
 					y: 0,
-					update: (anim) => {
+					update: () => {
 						this.handleDrag(v.x, v.y)
 					},
 				})
@@ -170,6 +182,7 @@ const placeholderPhotos = await response.json()
 			this.items = []
 			this.setGrid(nCol, nRow)
 		}
+
 		onDrag(xDelta, yDelta) {
 			this.offsetX += xDelta
 			this.offsetY += yDelta
@@ -182,15 +195,19 @@ const placeholderPhotos = await response.json()
 			const pixelHeight = (itemHeight * window.innerHeight) / 100
 			let jumpX = null
 			let jumpY = null
+
 			if (Math.abs(this.offsetX) > pixelWidth / 2) {
 				this.offsetX -= pixelWidth * Math.sign(this.offsetX)
 				jumpX = Math.sign(this.offsetX)
 			}
+
 			if (Math.abs(this.offsetY) > pixelHeight / 2) {
 				this.offsetY -= pixelHeight * Math.sign(this.offsetY)
 				jumpY = Math.sign(this.offsetY)
 			}
+
 			// console.log(this.rows, this.cols, jumpY)
+
 			if (jumpX || jumpY) {
 				this.items.forEach((item) => {
 					if (jumpX) item.setIndex(this.shiftIndex(item.index + jumpX))
@@ -200,10 +217,12 @@ const placeholderPhotos = await response.json()
 
 			this.grid.style.transform = `translate(${this.offsetX}px,${this.offsetY}px)`
 		}
+
 		shiftIndex(index) {
 			if (index < 0) {
 				index = this.items.length + index
 			}
+
 			index = index % this.items.length
 
 			return index
@@ -228,10 +247,12 @@ const placeholderPhotos = await response.json()
 			const nItems = cols * rows
 			this.cols = nCol
 			this.rows = nRow
+
 			while (nItems < this.items.length) {
 				this.grid.removeChild(this.grid.children[this.items.length - 1])
 				this.items = this.items.slice(0, this.items.length - 1)
 			}
+
 			while (nItems > this.items.length) {
 				const item = new GridItem(this.items.length)
 				this.items = this.items.concat(item)
@@ -248,7 +269,7 @@ const placeholderPhotos = await response.json()
 	const Infinite = new InfiniteGrid(grid.cols, grid.rows)
 
 	window.addEventListener('resize', () => {
-		const aspectRatio = window.innerWidth / window.innerHeight
+		// const aspectRatio = window.innerWidth / window.innerHeight
 
 		const grid = getColsAndRows()
 		Infinite.setGrid(grid.cols, grid.rows)
@@ -256,22 +277,38 @@ const placeholderPhotos = await response.json()
 
 	function getColsAndRows() {
 		let cols = 3
-		let rows = 3
-		if (window.innerWidth > 800) {
-			cols = 4
-			rows = 4
-		}
-		if (window.innerWidth < 500) {
-			rows = 1
-		}
+		let rows = 4
 
 		const aspectRatio = window.innerWidth / window.innerHeight
 
-		cols += Math.max(0, Math.floor(aspectRatio) - 1)
-		rows += Math.max(0, Math.floor(1 / (aspectRatio - 0.4)) - 1)
+		// Set rows and cols here
 
-		rows = Math.min(5, rows)
-		cols = Math.min(8, cols)
+		if (window.innerWidth > 800) {
+			cols = 4
+			rows = 3
+
+			rows = Math.min(3, rows)
+			cols = Math.min(5, cols)
+		}
+
+		if (window.innerWidth > 1200) {
+			cols = 6
+			rows = 4
+
+			rows = Math.min(5, rows)
+			cols = Math.min(6, cols)
+
+			cols += Math.max(0, Math.floor(aspectRatio) - 1)
+			rows += Math.max(0, Math.floor(1 / (aspectRatio - 0.4)) - 1)
+		}
+
+		if (window.innerWidth < 500) {
+			rows = 3
+			cols = 2
+
+			rows = Math.min(3, rows)
+			cols = Math.min(2, cols)
+		}
 
 		return { cols, rows }
 	}
