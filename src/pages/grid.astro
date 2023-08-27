@@ -81,15 +81,22 @@ const placeholderPhotos = await response.json()
 			// this.item.append(this.img)
 			this.index = index
 			// console.log(index)
-			this.setImage()
-			this.setTitle()
+			this.setNewCard()
 			this.item.classList.add('grid-item')
 		}
 		setIndex(index) {
 			this.index = index
-			this.setImage()
+			this.setNewCard()
 		}
-		setTitle() {
+
+		setNewCard() {
+			let image = photos[this.index % photos.length]
+			console.log(image)
+			// if (Object.prototype.toString.call(image) === '[object String]') {
+			// 	this.item.style.backgroundImage = `url(${image.thumbnailUrl})`
+			// } else {
+			// 	this.item.style.backgroundImage = `url(${image.thumbnailUrl})`
+			// }
 			let title = photos[this.index % photos.length].title
 			this.title.classList.add('grid-item--title')
 			this.title.style.background = '#000 none repeat scroll 0 0'
@@ -98,15 +105,7 @@ const placeholderPhotos = await response.json()
 			// this.title.style.padding = '0.5rem 0.75rem'
 			this.title.style.display = 'inline'
 			this.title.innerHTML = title
-		}
-		setImage() {
-			let image = photos[this.index % photos.length]
-			console.log(image)
-			if (Object.prototype.toString.call(image) === '[object String]') {
-				this.item.style.backgroundImage = `url(${image.thumbnailUrl})`
-			} else {
-				this.item.style.backgroundImage = `url(${image.thumbnailUrl})`
-			}
+			this.item.style.backgroundImage = `url(${image.thumbnailUrl})`
 			this.item.style.backgroundSize = 'cover'
 		}
 	}
