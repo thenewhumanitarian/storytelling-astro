@@ -24,10 +24,10 @@ const { Content, frontmatter } = Astro.props.post
 			<Card>
 				<a class='btn' href='/blog'>Go back</a>
 				<h2>{frontmatter.title}</h2>
-				<div class="italic">Written by <strong>{frontmatter.author}</strong> on {new Date(frontmatter.date).toLocaleDateString()}</div>
+				<div class='italic'>Written by <strong>{frontmatter.author}</strong> on {new Date(frontmatter.date).toLocaleDateString()}</div>
 				<p>{frontmatter.excerpt}</p>
 				<div class='border-b my-3>'></div>
-        <Content />
+				<Content />
 			</Card>
 		</div>
 	</section>
