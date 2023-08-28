@@ -265,13 +265,13 @@ const placeholderPhotos = await response.json()
 		}
 	}
 
-	const grid = getColsAndRows()
+	const grid = optimalGridDimensions()
 	const Infinite = new InfiniteGrid(grid.cols, grid.rows)
 
 	window.addEventListener('resize', () => {
 		// const aspectRatio = window.innerWidth / window.innerHeight
 
-		const grid = getColsAndRows()
+		const grid = optimalGridDimensions()
 		Infinite.setGrid(grid.cols, grid.rows)
 	})
 
@@ -311,5 +311,37 @@ const placeholderPhotos = await response.json()
 		}
 
 		return { cols, rows }
+	}
+
+	function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 150) {
+		const width = window.innerWidth
+		const height = window.innerHeight
+
+		const maxCols = Math.floor(width / minSide)
+		const maxRows = Math.floor(height / minSide)
+
+		let bestCols = 1
+		let bestRows = maxRows
+		let closestToSquare = Infinity
+
+		for (let cols = 1; cols <= maxCols; cols++) {
+			const cellWidth = width / cols
+			const rowsForSquare = Math.floor(height / cellWidth)
+
+			if (rowsForSquare > 0 && cellWidth >= minSide) {
+				const aspectRatioDiff = Math.abs(cellWidth * cols - (width * rowsForSquare) / height)
+
+				if (aspectRatioDiff < closestToSquare) {
+					closestToSquare = aspectRatioDiff
+					bestCols = cols
+					bestRows = rowsForSquare
+				}
+			}
+		}
+
+		return {
+			cols: bestCols,
+			rows: bestRows,
+		}
 	}
 </script>
