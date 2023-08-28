@@ -8,7 +8,7 @@ export interface Props {
 const { dark } = Astro.props as Props
 ---
 
-<header class={`${dark ? 'bg-black' : 'bg-white'} w-full h-16 absolute top-0 left-0 z-50`}>
+<header class={`${dark ? 'bg-black' : 'bg-white'} cursor-default w-full h-16 fixed top-0 left-0 z-50`}>
 	<div class='grid grid-cols-3 items-center px-6'>
 		<div class='flex justify-start gap-x-3 items-center'>
 			<a
