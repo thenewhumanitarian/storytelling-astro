@@ -1,3 +1,4 @@
+const slugify = require('slugify')
 const sharp = require('sharp')
 const moment = require('moment') // Install this via npm install moment
 const axios = require('axios')
@@ -100,7 +101,7 @@ async function scrapeArticlesFromPage(url, pageNumber = 0) {
 			if (!isValidImage) continue
 
 			const imageFileName = imageUrl.split('/').pop().split('?')[0]
-			const cleanedImageName = imageFileName.replace(/%20/g, '') // Removing %20 and replacing with space
+			const cleanedImageName = slugify(imageFileName)
 
 			const title = $$('.article__title').text().trim().normalize('NFC')
 			const subheading = $$('.article__subheading').text().trim().normalize('NFC')
