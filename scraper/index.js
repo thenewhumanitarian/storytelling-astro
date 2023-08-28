@@ -100,10 +100,12 @@ async function scrapeArticlesFromPage(url, pageNumber = 0) {
 			if (!isValidImage) continue
 
 			const imageFileName = imageUrl.split('/').pop().split('?')[0]
+			const cleanedImageName = imageFileName.replace(/%20/g, '') // Removing %20 and replacing with space
+
 			const title = $$('.article__title').text().trim().normalize('NFC')
 			const subheading = $$('.article__subheading').text().trim().normalize('NFC')
 
-			await downloadImage(imageUrl, imageFileName, title, subheading)
+			await downloadImage(imageUrl, cleanedImageName, title, subheading)
 			currentImageCount++
 		}
 
