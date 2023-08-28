@@ -70,7 +70,7 @@ import imagesData from '../data/images.json'
 	}
 </style>
 
-<script async define:vars={{ placeholderPhotos, imagesData }} is:inline>
+<script async define:vars={{ imagesData }} is:inline>
 	console.clear()
 
 	const photos = imagesData
@@ -106,7 +106,7 @@ import imagesData from '../data/images.json'
 			this.title.classList.add('bg-black')
 			this.title.classList.add('inline')
 			this.title.innerHTML = title
-			this.item.style.backgroundImage = `url('/images/downloaded_images/thumbnails/${image.savedAs}')`
+			this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${image.savedAs}')`
 			this.item.style.backgroundSize = 'cover'
 			this.item.style.backgroundPosition = 'center center'
 			this.item.style.paddingTop = '1rem'
