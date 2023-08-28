@@ -110,7 +110,8 @@ const placeholderPhotos = await response.json()
 			this.title.classList.add('bg-black')
 			this.title.classList.add('inline')
 			this.title.innerHTML = title
-			this.item.style.backgroundImage = `url(/downloaded_images/thumbnails/${image.savedAs})`
+			this.item.style.backgroundImage = `url(../downloaded_images/thumbnails/${image.savedAs})`
+			// this.item.style.backgroundImage = `url(/downloaded_images/thumbnails/${image.savedAs})`
 			this.item.style.backgroundSize = 'cover'
 			this.item.style.backgroundPosition = 'center center'
 			this.item.style.paddingTop = '1rem'
