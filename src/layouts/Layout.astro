@@ -9,10 +9,12 @@ import '../styles/global.css'
 
 export interface Props {
 	title?: string
-	dark?: boolean
+	dark?: boolean,
+	header?: boolean,
+	footer?: boolean,
 }
 
-const { dark, title } = Astro.props as Props
+const { dark, footer, header, title } = Astro.props as Props
 ---
 
 <!DOCTYPE html>
@@ -28,10 +30,10 @@ const { dark, title } = Astro.props as Props
 	</head>
 	<body>
 		<!-- Header  -->
-		<Header dark={dark} />
+		{header && <Header dark={dark} /> }
 		<!-- Main content -->
 		<slot />
 		<!-- Footer  -->
-		<!-- <Footer /> -->
+		{footer && <Footer /> }
 	</body>
 </html>

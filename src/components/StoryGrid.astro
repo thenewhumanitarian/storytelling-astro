@@ -1,26 +1,12 @@
 ---
-import Layout from '../layouts/Layout.astro'
-import imagesData from '../data/images.json'
+const { stories } = Astro.props;
 ---
 
-<Layout dark title='The Yemen Listening Project'>
-	<div class='stories-container' id='stories-container'><div id='grid' class='grid'></div></div>
-</Layout>
+<div class='stories-container' id='stories-container'><div id='grid' class='grid'></div></div>
 
 <script src='https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js' is:inline></script>
 
 <style is:global>
-	* {
-		box-sizing: border-box;
-	}
-	body {
-		margin: 0;
-		padding: 0;
-		overflow: hidden;
-		-webkit-user-select: none; /* Safari */
-		-ms-user-select: none; /* IE 10 and IE 11 */
-		user-select: none; /* Standard syntax */
-	}
 	span {
 		position: fixed;
 		z-index: 5000;
@@ -38,30 +24,47 @@ import imagesData from '../data/images.json'
 		overflow: hidden;
 		width: 100%;
 		height: 100vh;
-		cursor: grab;
+		z-index: 5555;
 	}
 	.grid {
 		display: grid;
 		width: 100%;
 		height: 100%;
 		overflow: hidden;
-		/* cursor: grab; */
 		gap: 0;
-	}
-	.grid:active {
-		cursor: grabbing;
 	}
 	.grid-item {
 		background: black;
 		background-size: cover;
 		background-position: center center;
 		user-select: none;
-		pointer-events: none;
 		overflow: hidden;
+		will-change: all;
+		transition: transform 0.25s ease-in-out;
+		transform: scale(1);
+		outline: 10px solid transparent;
+	}
+	@media screen and (min-width: 800px) {
+		.grid-item:hover {
+			transform: scale(1.05);
+			outline: 10px solid black;
+			opacity: 1;
+			z-index: 9999;
+		}
+	}
+	.grid-item:hover .grid-item--title {
+		color: black;
+		background: white;
 	}
 	.grid-item--title {
 		margin: 0;
-		box-decoration-break: clone !important;
+		box-decoration-break: clone;
+		font-size: 1.4rem;
+		line-height: 1.25;
+		padding: 0 0.4rem;
+	}
+	.grid-item--title:hover {
+		cursor: pointer;
 	}
 	@media screen and (max-width: 500px) {
 		.grid-item--title {
@@ -70,16 +73,41 @@ import imagesData from '../data/images.json'
 	}
 </style>
 
-<script async define:vars={{ imagesData }} is:inline>
+<script async define:vars={{ stories }} is:inline>
+	/* Cursor management */
+
+	let moveTimeout;
+
+	const storiesContainer = document.querySelector('.stories-container');
+
+	storiesContainer.addEventListener('mousemove', function() {
+		// Clear any existing timeout
+		if (moveTimeout) {
+			clearTimeout(moveTimeout);
+		}
+
+		// Set the cursor to 'grab' when the mouse is moving
+		this.style.cursor = 'move';
+
+		// After 1 second of no movement, set the cursor to 'pointer'
+		moveTimeout = setTimeout(() => {
+			this.style.cursor = 'pointer';
+		}, 250);
+	});
+
+	/* Grid magic */
+
 	console.clear()
 
-	const photos = imagesData
+	const photos = stories
 
 	class GridItem {
 		constructor(index = 0) {
 			this.item = document.createElement('div')
 			// Create h2 element and add to grid element
 			this.title = document.createElement('h2')
+			// Add class "line-clamp-2" to h2 element
+			this.title.classList.add('line-clamp-2')
 			this.item.append(this.title)
 			// this.item.append(document)
 			// this.img = document.createElement('img')
@@ -109,7 +137,7 @@ import imagesData from '../data/images.json'
 			this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${image.savedAs}')`
 			this.item.style.backgroundSize = 'cover'
 			this.item.style.backgroundPosition = 'center center'
-			this.item.style.paddingTop = '1rem'
+			this.item.style.paddingTop = '0'
 		}
 	}
 
