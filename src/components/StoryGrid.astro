@@ -202,7 +202,7 @@ class GridItem {
 		// Define vars to be used later
 		let story = stories[this.index % stories.length]
 		let title = stories[this.index % stories.length].title
-		this.item.setAttribute('transition:name', 'image')
+		// this.item.setAttribute('transition:name', 'image')
 		// Check if article was read before and write date of last read if that's the case
 		let readArticles = JSON.parse(localStorage.getItem('readArticles')) || []
 		let readArticle = readArticles.find((article) => article.slug === story.slug)

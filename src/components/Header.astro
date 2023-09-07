@@ -15,7 +15,7 @@ const { button, dark } = Astro.props as Props
 					<path d='M0 2v2h24V2Zm0 9v2h24v-2Zm0 9v2h24v-2Z'></path>
 				</svg>
 				{
-					button === 'filter' && (
+					button === 'filter' ? (
 						<button
 							class='bg-burgundy text-base rounded-xs text-white px-2 py-1 hidden sm:flex justify-center items-center gap-x-1'
 							id='filter-button'
@@ -26,12 +26,12 @@ const { button, dark } = Astro.props as Props
 									fill='white'
 								/>
 							</svg>
-							<span>Show all</span>
+							<span>Show</span>{' '}
+							<span class='font-bold' id='filter-button--option'>
+								all
+							</span>
 						</button>
-					)
-				}
-				{
-					button !== 'filter' && (
+					) : (
 						<a href='/' target='_self'>
 							<button
 								class='bg-burgundy text-base rounded-xs text-white px-2 py-1 hidden sm:flex justify-center items-center gap-x-1'
@@ -173,17 +173,17 @@ const { button, dark } = Astro.props as Props
 
 			// Function to set the button's text based on the showAll value
 			function setButtonText() {
-				const filterButton = document.querySelector('#filter-button span')
+				const filterButton = document.querySelector('#filter-button--option')
 				const showAll = localStorage.getItem('showAll')
 
 				if (showAll === 'true') {
 					// Change button text
-					filterButton.textContent = 'Show unread'
+					filterButton.textContent = 'unread'
 					// Remove class 'filter--read' from #grid
 					document.querySelector('#grid').classList.remove('filter--read')
 				} else {
 					// Change button text
-					filterButton.textContent = 'Show all'
+					filterButton.textContent = 'all'
 					// Add class 'filter--read' to #grid
 					document.querySelector('#grid').classList.add('filter--read')
 				}

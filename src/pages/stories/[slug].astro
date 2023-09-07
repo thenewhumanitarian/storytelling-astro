@@ -25,7 +25,6 @@ const { story } = Astro.props
 		<h1 class='text-left w-full'>{story.title}</h1>
 		<p class='text-xl'>{story.subheading}</p>
 		<Image
-			transition:name='image'
 			quality={50}
 			src={`/downloaded_images/${story.image.fileName}`}
 			width={story.image.width}
