@@ -1,19 +1,19 @@
 ---
-import { getImage } from 'astro:assets'
+// import { getImage } from 'astro:assets'
 
 const { stories } = Astro.props
 
 // Map through stories and add optimizedBackgroundImage = await getImage({ src: myImage }) to every single entry
-stories.map(async (story) => {
-	story.backgroundImage = await getImage({
-		src: `/downloaded_images/thumbnails/${story.image.fileName}`,
-		width: story.image.width,
-		height: story.image.height,
-	})
-	return story
-})
+// stories.map(async (story) => {
+// 	story.backgroundImage = await getImage({
+// 		src: `/downloaded_images/thumbnails/${story.image.fileName}`,
+// 		width: story.image.width,
+// 		height: story.image.height,
+// 	})
+// 	return story
+// })
 
-console.log(stories)
+// console.log(stories)
 ---
 
 <div class='stories-container' id='stories-container'><div id='grid' class='grid'></div></div>
