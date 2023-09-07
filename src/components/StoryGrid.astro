@@ -135,14 +135,14 @@ class GridItem {
 		this.item.append(this.title)
 
 		// Create <a> element within this.item
-		this.link = document.createElement('a')
+		// this.link = document.createElement('a')
 
 		// Add text "Link" to the this.link element
-		this.link.innerHTML = 'Read more →'
-		this.item.append(this.link)
+		// this.link.innerHTML = 'Read more →'
+		// this.item.append(this.link)
 
 		// Add class "grit-item--link" to this.link element
-		this.link.classList.add('grid-item--link')
+		// this.link.classList.add('grid-item--link')
 		this.index = index
 		this.item.classList.add('grid-item')
 		this.setNewCard()
@@ -164,7 +164,7 @@ class GridItem {
 		// Set data URL attribute for this.item (grid-item)
 		this.item.setAttribute('data-url', `/stories/${slug}`)
 		// Add href to this.link element
-		this.link.setAttribute('href', this.item.getAttribute('data-url'))
+		// this.link.setAttribute('href', this.item.getAttribute('data-url'))
 		// Set title classes and add text
 		this.title.classList.add('grid-item--title')
 		this.title.classList.add('box-decoration-clone')
