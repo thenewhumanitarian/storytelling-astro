@@ -12,6 +12,8 @@ stories.map(async (story) => {
 	})
 	return story
 })
+
+console.log(stories)
 ---
 
 <div class='stories-container' id='stories-container'><div id='grid' class='grid'></div></div>
@@ -182,8 +184,8 @@ class GridItem {
 		this.title.classList.add('inline')
 		this.title.innerHTML = title
 		// Set up background image for the item
-		this.item.style.backgroundImage = `url(${story.backgroundImage.src || `/downloaded_images/thumbnails/${story.image.fileName}`})`
-		// this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${story.image.fileName}')`
+		// this.item.style.backgroundImage = `url(${story.backgroundImage.src || `/downloaded_images/thumbnails/${story.image.fileName}`})`
+		this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${story.image.fileName}')`
 		this.item.style.backgroundSize = 'cover'
 		this.item.style.backgroundPosition = 'center center'
 		this.item.style.paddingTop = '0'
