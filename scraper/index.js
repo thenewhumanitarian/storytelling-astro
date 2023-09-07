@@ -7,13 +7,13 @@ const fs = require('fs-extra')
 const path = require('path')
 
 /* Store the images here: */
-const imageDetails = []
+const stories = []
 
 const baseURL = 'https://www.thenewhumanitarian.org'
 const allArticlesURL = baseURL + '/all-articles'
 const outputFolder = 'downloaded_images'
-const targetImageCount = 100
-let currentImageCount = 0
+const targetStoryCount = 100
+let currentStoryCount = 0
 
 async function createThumbnail(imagePath) {
 	const thumbnailPath = path.join(path.dirname(imagePath), 'thumbnails', path.basename(imagePath))
@@ -29,7 +29,7 @@ async function createThumbnail(imagePath) {
 	return thumbnailPath
 }
 
-async function downloadImage(url, filename, title, subheading) {
+async function downloadStory(url, filename, title, subheading, index) {
 	const response = await axios({
 		method: 'GET',
 		url: url,
@@ -47,11 +47,15 @@ async function downloadImage(url, filename, title, subheading) {
 	})
 
 	// Add image details to our tracking array
-	imageDetails.push({
-		imageUrl: url,
-		savedAs: filename,
+	stories.push({
+		id: index,
 		title: title,
 		subheading: subheading,
+		slug: slugify(title),
+		image: {
+			url: url,
+			fileName: filename,
+		},
 	})
 
 	try {
@@ -63,6 +67,7 @@ async function downloadImage(url, filename, title, subheading) {
 
 function getFullURL(link) {
 	console.log(link)
+
 	if (link.startsWith('http') || link.startsWith('https')) {
 		return link
 	} else {
@@ -71,7 +76,7 @@ function getFullURL(link) {
 }
 
 async function scrapeArticlesFromPage(url, pageNumber = 0) {
-	if (currentImageCount >= targetImageCount) return
+	if (currentStoryCount >= targetStoryCount) return
 
 	const response = await axios.get(url)
 	const $ = cheerio.load(response.data)
@@ -106,11 +111,11 @@ async function scrapeArticlesFromPage(url, pageNumber = 0) {
 			const title = $$('.article__title').text().trim().normalize('NFC')
 			const subheading = $$('.article__subheading').text().trim().normalize('NFC')
 
-			await downloadImage(imageUrl, cleanedImageName, title, subheading)
-			currentImageCount++
+			await downloadStory(imageUrl, cleanedImageName, title, subheading, currentStoryCount)
+			currentStoryCount++
 		}
 
-		if (currentImageCount >= targetImageCount) return
+		if (currentStoryCount >= targetStoryCount) return
 	}
 
 	// Increment page number and recurse
@@ -128,6 +133,6 @@ scrapeArticlesFromPage(allArticlesURL)
 	.then(() => {
 		// Write the image details to a new JSON file with a timestamped name in the main directory
 		const timestamp = moment().format('YYYYMMDD_HHmmss')
-		fs.writeJsonSync(path.join(__dirname, `images_${timestamp}.json`), imageDetails)
+		fs.writeJsonSync(path.join(__dirname, `stories_${timestamp}.json`), stories)
 	})
 	.catch(console.error)

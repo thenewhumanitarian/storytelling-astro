@@ -1,0 +1,24 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import stories from '../../data/stories.json'
+
+export async function getStaticPaths() {
+	console.log(stories)
+	const posts = await Astro.glob('../../posts/*.md')
+
+	return posts.map((post) => ({
+		params: {
+			slug: post.frontmatter.slug,
+		},
+		props: {
+			post,
+		},
+	}))
+}
+
+const { Content, frontmatter } = Astro.props.post
+---
+
+<Layout dark title='The Yemen Listening Project' header={true} footer={false}>
+	<h1>Single Story Page</h1>
+</Layout>

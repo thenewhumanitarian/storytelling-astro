@@ -1,5 +1,5 @@
 ---
-const { stories } = Astro.props;
+const { stories } = Astro.props
 ---
 
 <div class='stories-container' id='stories-container'><div id='grid' class='grid'></div></div>
@@ -7,7 +7,12 @@ const { stories } = Astro.props;
 <script src='https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js' is:inline></script>
 
 <style is:global>
-	span {
+	header {
+		/* Makes header fixed whenever a Storygrid is present */
+		position: fixed;
+		z-index: 9999 !important;
+	}
+	.stories-container span {
 		position: fixed;
 		z-index: 5000;
 		top: 0;
@@ -74,297 +79,259 @@ const { stories } = Astro.props;
 </style>
 
 <script async define:vars={{ stories }} is:inline>
-	/* Cursor management */
+/* Cursor management */
+let moveTimeout
 
-	let moveTimeout;
+const storiesContainer = document.querySelector('.stories-container')
 
-	const storiesContainer = document.querySelector('.stories-container');
-
-	storiesContainer.addEventListener('mousemove', function() {
-		// Clear any existing timeout
-		if (moveTimeout) {
-			clearTimeout(moveTimeout);
-		}
-
-		// Set the cursor to 'grab' when the mouse is moving
-		this.style.cursor = 'move';
-
-		// After 1 second of no movement, set the cursor to 'pointer'
-		moveTimeout = setTimeout(() => {
-			this.style.cursor = 'pointer';
-		}, 250);
-	});
-
-	/* Grid magic */
-
-	console.clear()
-
-	const photos = stories
-
-	class GridItem {
-		constructor(index = 0) {
-			this.item = document.createElement('div')
-			// Create h2 element and add to grid element
-			this.title = document.createElement('h2')
-			// Add class "line-clamp-2" to h2 element
-			this.title.classList.add('line-clamp-2')
-			this.item.append(this.title)
-			// this.item.append(document)
-			// this.img = document.createElement('img')
-			// this.item.append(this.img)
-			this.index = index
-			// console.log(index)
-			this.setNewCard()
-			this.item.classList.add('grid-item')
-		}
-
-		setIndex(index) {
-			this.index = index
-			this.setNewCard()
-		}
-
-		setNewCard() {
-			let image = photos[this.index % photos.length]
-			let title = photos[this.index % photos.length].title
-			this.title.classList.add('grid-item--title')
-			this.title.classList.add('box-decoration-clone')
-			this.title.classList.add('px-2')
-			this.title.classList.add('leading-7')
-			this.title.classList.add('text-white')
-			this.title.classList.add('bg-black')
-			this.title.classList.add('inline')
-			this.title.innerHTML = title
-			this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${image.savedAs}')`
-			this.item.style.backgroundSize = 'cover'
-			this.item.style.backgroundPosition = 'center center'
-			this.item.style.paddingTop = '0'
-		}
+storiesContainer.addEventListener('mousemove', function () {
+	// Clear any existing timeout
+	if (moveTimeout) {
+		clearTimeout(moveTimeout)
 	}
 
-	class Drag {
-		constructor(ele, handleDrag) {
-			this.dragging = false
-			this.lastX = null
-			this.lastY = null
-			this.handleDrag = handleDrag
+	// Set the cursor to 'grab' when the mouse is moving
+	this.style.cursor = 'move'
 
-			ele.addEventListener('touchstart', this.onStart.bind(this), false)
-			ele.addEventListener('touchmove', this.onMove.bind(this), false)
-			ele.addEventListener('touchend', this.onEnd.bind(this), false)
+	// After 1 second of no movement, set the cursor to 'pointer'
+	moveTimeout = setTimeout(() => {
+		this.style.cursor = 'pointer'
+	}, 250)
+})
 
-			ele.addEventListener('mousedown', this.onStart.bind(this))
-			ele.addEventListener('mousemove', this.onMove.bind(this))
-			ele.addEventListener('mouseup', this.onEnd.bind(this))
-			ele.addEventListener('mouseuot', this.onEnd.bind(this))
-		}
+/* Grid magic */
+console.clear()
 
-		onStart(ev) {
-			ev = ev.type == 'touchstart' ? ev.touches[0] : ev
-
-			this.dragging = true
-			this.lastX = ev.clientX
-			this.lastY = ev.clientY
-		}
-
-		onMove(ev) {
-			if (!this.dragging) return
-
-			ev = ev.type == 'touchmove' ? ev.touches[0] : ev
-			let xDelta = ev.clientX - this.lastX
-			let yDelta = ev.clientY - this.lastY
-			let vel = Math.abs(xDelta * yDelta)
-			if (vel > 50) {
-				// let v = { x: xDelta * 0.5, y: yDelta * 0.5 } // Make it more snappy
-				let v = { x: xDelta * 0, y: yDelta * 0 }
-				if (this.anime) this.anime.pause()
-				this.anime = anime({
-					targets: v,
-					x: 0,
-					y: 0,
-					update: () => {
-						this.handleDrag(v.x, v.y)
-					},
-				})
-			}
-			this.handleDrag(xDelta, yDelta)
-			this.lastX = ev.clientX
-			this.lastY = ev.clientY
-		}
-		onEnd(ev) {
-			this.dragging = false
-		}
+class GridItem {
+	constructor(index = 0) {
+		this.item = document.createElement('div')
+		// Create h2 element and add to grid element
+		this.title = document.createElement('h2')
+		// Add class "line-clamp-2" to h2 element
+		// this.title.classList.add('line-clamp-2')
+		this.item.append(this.title)
+		// this.item.append(document)
+		// this.img = document.createElement('img')
+		// this.item.append(this.img)
+		this.index = index
+		// console.log(index)
+		this.item.classList.add('grid-item')
+		this.setNewCard()
 	}
-	class InfiniteGrid {
-		constructor(nCol = 2, nRow = 2) {
-			this.grid = document.getElementById('grid')
-			this.container = document.getElementById('stories-container')
-			this.Drag = new Drag(this.container, this.onDrag.bind(this))
-			this.offsetX = 0
-			this.offsetY = 0
-			// Overshoot items
-			this.items = []
-			this.setGrid(nCol, nRow)
-		}
 
-		onDrag(xDelta, yDelta) {
-			this.offsetX += xDelta
-			this.offsetY += yDelta
+	setIndex(index) {
+		this.index = index
+		this.setNewCard()
+	}
 
-			// Move the grid back by 1 item whenever it goes over 1/2 of an item
-			// Making the movement invisible
-			const itemWidth = 100 / this.cols
-			const itemHeight = 100 / this.rows
-			const pixelWidth = (itemWidth * window.innerWidth) / 100
-			const pixelHeight = (itemHeight * window.innerHeight) / 100
-			let jumpX = null
-			let jumpY = null
+	setNewCard() {
+		let story = stories[this.index % stories.length]
+		let title = stories[this.index % stories.length].title
+		this.title.classList.add('grid-item--title')
+		this.title.classList.add('box-decoration-clone')
+		this.title.classList.add('px-2')
+		this.title.classList.add('leading-7')
+		this.title.classList.add('text-white')
+		this.title.classList.add('bg-black')
+		this.title.classList.add('inline')
+		this.title.innerHTML = title
+		this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${story.image.fileName}')`
+		this.item.style.backgroundSize = 'cover'
+		this.item.style.backgroundPosition = 'center center'
+		this.item.style.paddingTop = '0'
+		// Add target="_blank" to this item
+		this.item.setAttribute('target', '_self')
+		// Add href to this item
+		this.item.setAttribute('href', `/stories/${story.slug}`)
+	}
+}
 
-			if (Math.abs(this.offsetX) > pixelWidth / 2) {
-				this.offsetX -= pixelWidth * Math.sign(this.offsetX)
-				jumpX = Math.sign(this.offsetX)
-			}
+class Drag {
+	constructor(ele, handleDrag) {
+		this.dragging = false
+		this.lastX = null
+		this.lastY = null
+		this.handleDrag = handleDrag
 
-			if (Math.abs(this.offsetY) > pixelHeight / 2) {
-				this.offsetY -= pixelHeight * Math.sign(this.offsetY)
-				jumpY = Math.sign(this.offsetY)
-			}
+		ele.addEventListener('touchstart', this.onStart.bind(this), false)
+		ele.addEventListener('touchmove', this.onMove.bind(this), false)
+		ele.addEventListener('touchend', this.onEnd.bind(this), false)
 
-			// console.log(this.rows, this.cols, jumpY)
+		ele.addEventListener('mousedown', this.onStart.bind(this))
+		ele.addEventListener('mousemove', this.onMove.bind(this))
+		ele.addEventListener('mouseup', this.onEnd.bind(this))
+		ele.addEventListener('mouseuot', this.onEnd.bind(this))
+	}
 
-			if (jumpX || jumpY) {
-				this.items.forEach((item) => {
-					if (jumpX) item.setIndex(this.shiftIndex(item.index + jumpX))
-					if (jumpY) item.setIndex(this.shiftIndex(item.index + jumpY * (this.cols + 2)))
-				})
-			}
+	onStart(ev) {
+		ev = ev.type == 'touchstart' ? ev.touches[0] : ev
 
-			this.grid.style.transform = `translate(${this.offsetX}px,${this.offsetY}px)`
-		}
+		this.dragging = true
+		this.lastX = ev.clientX
+		this.lastY = ev.clientY
+	}
 
-		shiftIndex(index) {
-			if (index < 0) {
-				index = this.items.length + index
-			}
+	onMove(ev) {
+		if (!this.dragging) return
 
-			index = index % this.items.length
-
-			return index
-		}
-
-		setGrid(nCol = 2, nRow = 2) {
-			if (nCol === this.cols && nRow === this.rows) return
-
-			// Overshoot items
-			const cols = nCol + 2
-			const rows = nRow + 2
-			// Add space for 2 more rows and columns using the current col/row size
-			this.container.style.width = `${100 + (100 / nCol) * 2}vw`
-			this.container.style.height = `${100 + (100 / nRow) * 2}vh`
-			// Move the grid back by 1 col and row
-			this.container.style.transform = `translate(${-100 / nCol}vw, ${-100 / nRow}vh)`
-
-			// Do everything else taking into account the overshoot items
-			this.grid.style.gridTemplateColumns = Array.from({ length: cols }, () => '1fr').join(' ')
-			this.grid.style.gridTemplateRows = Array.from({ length: rows }, () => '1fr').join(' ')
-
-			const nItems = cols * rows
-			this.cols = nCol
-			this.rows = nRow
-
-			while (nItems < this.items.length) {
-				this.grid.removeChild(this.grid.children[this.items.length - 1])
-				this.items = this.items.slice(0, this.items.length - 1)
-			}
-
-			while (nItems > this.items.length) {
-				const item = new GridItem(this.items.length)
-				this.items = this.items.concat(item)
-				this.grid.append(item.item)
-			}
-
-			this.items.forEach((item, index) => {
-				item.setIndex(index)
+		ev = ev.type == 'touchmove' ? ev.touches[0] : ev
+		let xDelta = ev.clientX - this.lastX
+		let yDelta = ev.clientY - this.lastY
+		let vel = Math.abs(xDelta * yDelta)
+		if (vel > 50) {
+			// let v = { x: xDelta * 0.5, y: yDelta * 0.5 } // Make it more snappy
+			let v = { x: xDelta * 0, y: yDelta * 0 }
+			if (this.anime) this.anime.pause()
+			this.anime = anime({
+				targets: v,
+				x: 0,
+				y: 0,
+				update: () => {
+					this.handleDrag(v.x, v.y)
+				},
 			})
 		}
+		this.handleDrag(xDelta, yDelta)
+		this.lastX = ev.clientX
+		this.lastY = ev.clientY
 	}
+	onEnd(ev) {
+		this.dragging = false
+	}
+}
+class InfiniteGrid {
+	constructor(nCol = 2, nRow = 2) {
+		this.grid = document.getElementById('grid')
+		this.container = document.getElementById('stories-container')
+		this.Drag = new Drag(this.container, this.onDrag.bind(this))
+		this.offsetX = 0
+		this.offsetY = 0
+		// Overshoot items
+		this.items = []
+		this.setGrid(nCol, nRow)
+	}
+
+	onDrag(xDelta, yDelta) {
+		this.offsetX += xDelta
+		this.offsetY += yDelta
+
+		// Move the grid back by 1 item whenever it goes over 1/2 of an item
+		// Making the movement invisible
+		const itemWidth = 100 / this.cols
+		const itemHeight = 100 / this.rows
+		const pixelWidth = (itemWidth * window.innerWidth) / 100
+		const pixelHeight = (itemHeight * window.innerHeight) / 100
+		let jumpX = null
+		let jumpY = null
+
+		if (Math.abs(this.offsetX) > pixelWidth / 2) {
+			this.offsetX -= pixelWidth * Math.sign(this.offsetX)
+			jumpX = Math.sign(this.offsetX)
+		}
+
+		if (Math.abs(this.offsetY) > pixelHeight / 2) {
+			this.offsetY -= pixelHeight * Math.sign(this.offsetY)
+			jumpY = Math.sign(this.offsetY)
+		}
+
+		// console.log(this.rows, this.cols, jumpY)
+
+		if (jumpX || jumpY) {
+			this.items.forEach((item) => {
+				if (jumpX) item.setIndex(this.shiftIndex(item.index + jumpX))
+				if (jumpY) item.setIndex(this.shiftIndex(item.index + jumpY * (this.cols + 2)))
+			})
+		}
+
+		this.grid.style.transform = `translate(${this.offsetX}px,${this.offsetY}px)`
+	}
+
+	shiftIndex(index) {
+		if (index < 0) {
+			index = this.items.length + index
+		}
+
+		index = index % this.items.length
+
+		return index
+	}
+
+	setGrid(nCol = 2, nRow = 2) {
+		if (nCol === this.cols && nRow === this.rows) return
+
+		// Overshoot items
+		const cols = nCol + 2
+		const rows = nRow + 2
+		// Add space for 2 more rows and columns using the current col/row size
+		this.container.style.width = `${100 + (100 / nCol) * 2}vw`
+		this.container.style.height = `${100 + (100 / nRow) * 2}vh`
+		// Move the grid back by 1 col and row
+		this.container.style.transform = `translate(${-100 / nCol}vw, ${-100 / nRow}vh)`
+
+		// Do everything else taking into account the overshoot items
+		this.grid.style.gridTemplateColumns = Array.from({ length: cols }, () => '1fr').join(' ')
+		this.grid.style.gridTemplateRows = Array.from({ length: rows }, () => '1fr').join(' ')
+
+		const nItems = cols * rows
+		this.cols = nCol
+		this.rows = nRow
+
+		while (nItems < this.items.length) {
+			this.grid.removeChild(this.grid.children[this.items.length - 1])
+			this.items = this.items.slice(0, this.items.length - 1)
+		}
+
+		while (nItems > this.items.length) {
+			const item = new GridItem(this.items.length)
+			this.items = this.items.concat(item)
+			this.grid.append(item.item)
+		}
+
+		this.items.forEach((item, index) => {
+			item.setIndex(index)
+		})
+	}
+}
+
+const grid = optimalGridDimensions()
+const Infinite = new InfiniteGrid(grid.cols, grid.rows)
+
+window.addEventListener('resize', () => {
+	// const aspectRatio = window.innerWidth / window.innerHeight
 
 	const grid = optimalGridDimensions()
-	const Infinite = new InfiniteGrid(grid.cols, grid.rows)
+	Infinite.setGrid(grid.cols, grid.rows)
+})
 
-	window.addEventListener('resize', () => {
-		// const aspectRatio = window.innerWidth / window.innerHeight
+function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 150) {
+	const width = window.innerWidth
+	const height = window.innerHeight
 
-		const grid = optimalGridDimensions()
-		Infinite.setGrid(grid.cols, grid.rows)
-	})
+	const maxCols = Math.floor(width / minSide)
+	const maxRows = Math.floor(height / minSide)
 
-	function getColsAndRows() {
-		let cols = 3
-		let rows = 4
+	let bestCols = 1
+	let bestRows = maxRows
+	let closestToSquare = Infinity
 
-		const aspectRatio = window.innerWidth / window.innerHeight
+	for (let cols = 1; cols <= maxCols; cols++) {
+		const cellWidth = width / cols
+		const rowsForSquare = Math.floor(height / cellWidth)
 
-		// Set rows and cols here
+		if (rowsForSquare > 0 && cellWidth >= minSide) {
+			const aspectRatioDiff = Math.abs(cellWidth * cols - (width * rowsForSquare) / height)
 
-		if (window.innerWidth > 800) {
-			cols = 4
-			rows = 3
-
-			rows = Math.min(3, rows)
-			cols = Math.min(5, cols)
-		}
-
-		if (window.innerWidth > 1200) {
-			cols = 6
-			rows = 4
-
-			rows = Math.min(5, rows)
-			cols = Math.min(6, cols)
-
-			cols += Math.max(0, Math.floor(aspectRatio) - 1)
-			rows += Math.max(0, Math.floor(1 / (aspectRatio - 0.4)) - 1)
-		}
-
-		if (window.innerWidth < 500) {
-			rows = 3
-			cols = 2
-
-			rows = Math.min(3, rows)
-			cols = Math.min(2, cols)
-		}
-
-		return { cols, rows }
-	}
-
-	function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 150) {
-		const width = window.innerWidth
-		const height = window.innerHeight
-
-		const maxCols = Math.floor(width / minSide)
-		const maxRows = Math.floor(height / minSide)
-
-		let bestCols = 1
-		let bestRows = maxRows
-		let closestToSquare = Infinity
-
-		for (let cols = 1; cols <= maxCols; cols++) {
-			const cellWidth = width / cols
-			const rowsForSquare = Math.floor(height / cellWidth)
-
-			if (rowsForSquare > 0 && cellWidth >= minSide) {
-				const aspectRatioDiff = Math.abs(cellWidth * cols - (width * rowsForSquare) / height)
-
-				if (aspectRatioDiff < closestToSquare) {
-					closestToSquare = aspectRatioDiff
-					bestCols = cols
-					bestRows = rowsForSquare
-				}
+			if (aspectRatioDiff < closestToSquare) {
+				closestToSquare = aspectRatioDiff
+				bestCols = cols
+				bestRows = rowsForSquare
 			}
 		}
-
-		return {
-			cols: bestCols,
-			rows: bestRows,
-		}
 	}
+
+	return {
+		cols: bestCols,
+		rows: bestRows,
+	}
+}
 </script>

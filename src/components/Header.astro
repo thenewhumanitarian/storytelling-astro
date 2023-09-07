@@ -1,26 +1,41 @@
 ---
 export interface Props {
+	button?: string
 	dark?: boolean
 }
 
-const { dark } = Astro.props as Props
+const { button, dark } = Astro.props as Props
 ---
 
-<header class={`${dark ? 'bg-black shadow-xs shadow-white' : 'bg-white'} cursor-default w-full h-20 fixed top-0 left-0 z-50`}>
-	<div class='grid grid-cols-3 items-center px-6'>
+<header
+	class={`${dark ? 'bg-black shadow-xs shadow-white' : 'bg-white'} flex items-center justify-between w-full cursor-default h-20 top-0 left-0 z-50`}
+>
+	<div class='grid grid-cols-3 items-center px-6 w-full'>
 		<div class='flex justify-start gap-x-3 items-center'>
 			<div class={`${dark ? 'text-white' : 'text-black'} fill-current flex gap-5 items-center justify-start`}>
-				<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' class='fill-current text-white'
-					><path d='M0 2v2h24V2Zm0 9v2h24v-2Zm0 9v2h24v-2Z'></path></svg
-				>
-				<a
-					rel={'noopener noreferrer'}
-					target='_blank'
-					class='bg-burgundy text-sm text-white px-2 py-1 hidden sm:block'
-					href='https://www.thenewhumanitarian.org/membership'
-				>
-					Highlight unread stories
-				</a>
+				<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' class='fill-current text-white'>
+					<path d='M0 2v2h24V2Zm0 9v2h24v-2Zm0 9v2h24v-2Z'></path>
+				</svg>
+				{
+					button === 'showAll' && (
+						<button class='bg-burgundy text-sm text-white px-2 py-1 hidden sm:flex justify-center items-center gap-x-1' id='filter-button'>
+							<svg width='14px' height='auto' viewBox='0 0 117 118' fill='none' xmlns='http://www.w3.org/2000/svg'>
+								<path
+									d='M4.50008 0.333252C1.37501 0.333252 -0.708187 3.87485 0.95848 6.58325L46.1665 66.9993V112.833C46.1665 115.958 49.4998 118.041 52.2081 116.583L68.8747 108.249C70.3331 107.624 71.1665 106.166 71.1665 104.499V66.9993L116.374 6.58325C118.041 3.87499 115.958 0.333252 112.833 0.333252H4.50008Z'
+									fill='white'
+								/>
+							</svg>
+							<span>Show unread</span>
+						</button>
+					)
+				}
+				{
+					button === 'back' && (
+						<button class='bg-burgundy text-sm text-white px-2 py-1 hidden sm:flex justify-center items-center gap-x-1' id='filter-button'>
+							<span>← Back</span>
+						</button>
+					)
+				}
 			</div>
 		</div>
 		<div class='flex justify-center'>
@@ -125,12 +140,6 @@ const { dark } = Astro.props as Props
 			 Share
 		</div>
 
-		<style>
-			header {
-				z-index: 9999;
-			}
-		</style>
-
 		<script>
 			let blinkCount = 0
 
@@ -150,6 +159,39 @@ const { dark } = Astro.props as Props
 					clearInterval(blinkInterval) // Stop the interval after 10 blinks
 				}
 			}, 500) // Blink every 1000ms (1 second)
+
+			// Function to set the button's text based on the showAll value
+			function setButtonText() {
+				const filterButton = document.querySelector('#filter-button span')
+				const showAll = localStorage.getItem('showAll')
+
+				if (showAll === 'true') {
+					filterButton.textContent = 'Show unread'
+				} else {
+					filterButton.textContent = 'Show all'
+				}
+			}
+
+			// Event listener for toggling localStorage value and updating button text
+			document.getElementById('filter-button').addEventListener('click', function () {
+				let showAll = localStorage.getItem('showAll')
+				console.log('click')
+
+				// Toggle the localStorage value
+				if (showAll === 'true') {
+					localStorage.setItem('showAll', 'false')
+				} else {
+					localStorage.setItem('showAll', 'true')
+				}
+
+				// Update the button text after toggling
+				setButtonText()
+			})
+
+			// Call the function on page load to set the initial text
+			document.addEventListener('DOMContentLoaded', function () {
+				setButtonText()
+			})
 		</script>
 	</div>
 </header>
