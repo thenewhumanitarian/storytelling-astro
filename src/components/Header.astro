@@ -23,7 +23,7 @@ const { button, dark } = Astro.props as Props
 									fill='white'
 								/>
 							</svg>
-							<span>Show unread</span>
+							<span>Show all</span>
 						</button>
 					) : (
 						<a href='/' target='_self'>
@@ -155,7 +155,12 @@ const { button, dark } = Astro.props as Props
 				if (blinkCount === 10) {
 					clearInterval(blinkInterval) // Stop the interval after 10 blinks
 				}
-			}, 500) // Blink every 1000ms (1 second)
+			}, 500)
+
+			if (localStorage.getItem('showAll') === null) {
+				// Set false by default to only show the ones that haven't been read
+				localStorage.setItem('showAll', 'false')
+			}
 
 			// Function to set the button's text based on the showAll value
 			function setButtonText() {
@@ -163,16 +168,21 @@ const { button, dark } = Astro.props as Props
 				const showAll = localStorage.getItem('showAll')
 
 				if (showAll === 'true') {
+					// Change button text
 					filterButton.textContent = 'Show unread'
+					// Remove class 'filter--read' from #grid
+					document.querySelector('#grid').classList.remove('filter--read')
 				} else {
+					// Change button text
 					filterButton.textContent = 'Show all'
+					// Add class 'filter--read' to #grid
+					document.querySelector('#grid').classList.add('filter--read')
 				}
 			}
 
-			// Event listener for toggling localStorage value and updating button text
-			document.getElementById('filter-button').addEventListener('click', function () {
+			// Named function for the event listener
+			function toggleShowAll() {
 				let showAll = localStorage.getItem('showAll')
-				console.log('click')
 
 				// Toggle the localStorage value
 				if (showAll === 'true') {
@@ -183,10 +193,19 @@ const { button, dark } = Astro.props as Props
 
 				// Update the button text after toggling
 				setButtonText()
-			})
+			}
 
-			// Call the function on page load to set the initial text
-			document.addEventListener('DOMContentLoaded', function () {
+			// DOMContentLoaded
+			document.addEventListener('DOMContentLoaded', () => {
+				// Get the button element
+				let filterButton = document.getElementById('filter-button')
+
+				// Remove the event listener (this is safe even if it wasn't added before)
+				filterButton.removeEventListener('click', toggleShowAll)
+
+				// Add the event listener
+				filterButton.addEventListener('click', toggleShowAll)
+
 				setButtonText()
 			})
 		</script>

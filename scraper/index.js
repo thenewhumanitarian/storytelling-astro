@@ -60,6 +60,7 @@ async function downloadStory(imageUrl, filename, title, subheading, index) {
 		subheading: subheading,
 		body: exampleBodyString,
 		slug: slugify(title),
+		lastRead: null,
 		image: {
 			url: imageUrl,
 			fileName: filename,

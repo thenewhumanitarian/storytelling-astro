@@ -6,8 +6,6 @@ import stories from '../../data/stories.json'
 import { Image } from 'astro:assets'
 
 export async function getStaticPaths() {
-	console.log(stories)
-
 	return stories.map((story) => ({
 		params: {
 			slug: story.slug,
@@ -20,19 +18,12 @@ export async function getStaticPaths() {
 
 // Define props
 const { story } = Astro.props
-
-console.log(story)
-
-// Import specific image from /src folder
-// import heroImage from `../../images/downloaded_images/${story.image.fileName}`
 ---
 
 <Layout dark title='The Yemen Listening Project' header={true} footer={false}>
-	<div class='w-full max-w-5xl mx-auto my-8' class='story-detail-page--wrapper'>
-		<h1>{story.title}</h1>
+	<div class='w-full max-w-5xl mx-auto mt-16 mb-8 sm:mb-24 px-4' class='story-detail-page--wrapper'>
+		<h1 class='text-left w-full'>{story.title}</h1>
 		<p class='text-xl'>{story.subheading}</p>
-		<!-- <Image src={heroImage} alt="A description of my image." /> -->
-		<!-- Image loaded from /public folder variant -->
 		<Image
 			transition:name='image'
 			quality={50}
@@ -60,3 +51,25 @@ console.log(story)
 		color: white;
 	}
 </style>
+
+<script define:vars={{ slug: story.slug }}>
+// Add article slug to array of read articles in lStorage
+
+// Retrieve the read articles array from localStorage or initialize a new one
+let readArticles = JSON.parse(localStorage.getItem('readArticles')) || []
+
+// Check if the current article's slug is not in the array
+if (!readArticles.some((article) => article.slug === slug)) {
+	// Create an object with the current article's slug and the current timestamp
+	const articleObject = {
+		slug: slug,
+		timestamp: new Date().toISOString(),
+	}
+
+	// Add the object to the read articles array
+	readArticles.push(articleObject)
+
+	// Save the updated array back to localStorage
+	localStorage.setItem('readArticles', JSON.stringify(readArticles))
+}
+</script>

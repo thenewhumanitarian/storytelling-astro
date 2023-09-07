@@ -1,23 +1,12 @@
 ---
-// import { getImage } from 'astro:assets'
-
 const { stories } = Astro.props
-
-// Map through stories and add optimizedBackgroundImage = await getImage({ src: myImage }) to every single entry
-// stories.map(async (story) => {
-// 	story.backgroundImage = await getImage({
-// 		src: `/downloaded_images/thumbnails/${story.image.fileName}`,
-// 		width: story.image.width,
-// 		height: story.image.height,
-// 	})
-// 	return story
-// })
-
-// console.log(stories)
 ---
 
-<div class='stories-container' id='stories-container'><div id='grid' class='grid'></div></div>
+<div class={`stories-container`} id='stories-container'>
+	<div id='grid' class='grid'></div>
+</div>
 
+<!-- Library to help moving around the grid -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js' is:inline></script>
 
 <style is:global>
@@ -63,6 +52,9 @@ const { stories } = Astro.props
 		transition: transform 0.25s ease-in-out;
 		transform: scale(1);
 	}
+	.filter--read .grid-item:not([data-lastread='never']) {
+		opacity: 0.2;
+	}
 	/* .grid-item a:hover {
 		text-decoration: none;
 		pointer-events: none;
@@ -71,15 +63,19 @@ const { stories } = Astro.props
 		.grid-item {
 			outline: 10px solid transparent;
 		}
-		.grid-item:hover {
+		.grid-item:not(.filter--read):hover,
+		.grid-item[data-lastread='never']:hover {
 			transform: scale(1.05);
 			outline: 10px solid black;
 			opacity: 1;
 			z-index: 9999;
 		}
-		.grid-item:hover .grid-item--title {
+		.filter--read .grid-item[data-lastread='never']:hover .grid-item--title {
 			color: black;
 			background: white;
+		}
+		.filter--read .grid-item:not([data-lastread='never']) {
+			pointer-events: none;
 		}
 	}
 	.grid-item--title {
@@ -118,24 +114,50 @@ const { stories } = Astro.props
 </style>
 
 <script async define:vars={{ stories }} is:inline>
-/* Cursor management */
-// let moveTimeout
+if (localStorage.getItem('showAll') === 'false') {
+	document.getElementById('grid').classList.add('filter--read')
+} else {
+	document.getElementById('grid').classList.remove('filter--read')
+}
+
+// window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('pageshow', function () {
+	// Add class to #grid if localStorage('showAll') is set to false
+	if (localStorage.getItem('showAll') === 'false') {
+		document.getElementById('grid').classList.add('filter--read')
+	} else {
+		document.getElementById('grid').classList.remove('filter--read')
+	}
+	// Get the read articles from localStorage or use an empty array if it doesn't exist
+	let readArticles = JSON.parse(localStorage.getItem('readArticles')) || []
+
+	// Loop through all .grid-element items on the page
+	let gridElements = document.querySelectorAll('.grid-element')
+	gridElements.forEach((element) => {
+		// Assuming each .grid-element has a data attribute (e.g., data-slug) that stores its slug
+		let slug = element.getAttribute('data-slug')
+
+		// Find the corresponding read article based on the slug
+		let readArticle = readArticles.find((article) => article.slug === slug)
+
+		if (readArticle) {
+			// If the article has been read before, set the data-lastread attribute
+			element.setAttribute('data-lastread', readArticle.timestamp)
+			element.style.opacity = 0.2
+		} else {
+			// If the article hasn't been read, remove the data-lastread attribute (if it exists)
+			element.setAttribute('data-lastread', 'never')
+		}
+	})
+
+	const grid = optimalGridDimensions()
+	Infinite.setGrid(grid.cols, grid.rows)
+})
 
 const storiesContainer = document.querySelector('.stories-container')
 
 storiesContainer.addEventListener('mousemove', function () {
-	// Clear any existing timeout
-	// if (moveTimeout) {
-	// 	clearTimeout(moveTimeout)
-	// }
-
-	// Set the cursor to 'grab' when the mouse is moving
 	this.style.cursor = 'move'
-
-	// After 1 second of no movement, set the cursor to 'pointer'
-	// moveTimeout = setTimeout(() => {
-	// 	this.style.cursor = 'pointer'
-	// }, 250)
 })
 
 console.clear()
@@ -147,20 +169,8 @@ class GridItem {
 		// Create h2 element for title
 		this.title = document.createElement('h2')
 		this.item.append(this.title)
-
-		// Create <a> element within this.item
-		// this.link = document.createElement('a')
-
-		// Add text "Link" to the this.link element
-		// this.link.innerHTML = 'Read more →'
-		// this.item.append(this.link)
-
-		// Add class "grit-item--link" to this.link element
-		// this.link.classList.add('grid-item--link')
-
 		this.index = index
 		this.item.classList.add('grid-item')
-
 		this.setNewCard()
 	}
 
@@ -174,6 +184,16 @@ class GridItem {
 		let story = stories[this.index % stories.length]
 		let title = stories[this.index % stories.length].title
 		this.item.setAttribute('transition:name', 'image')
+		// Check if article was read before and write date of last read if that's the case
+		let readArticles = JSON.parse(localStorage.getItem('readArticles')) || []
+		let readArticle = readArticles.find((article) => article.slug === story.slug)
+		if (readArticle) {
+			// If the current article has been read before, set the data-lastread attribute with the timestamp
+			this.item.setAttribute('data-lastread', readArticle.timestamp)
+		} else {
+			// If the current article has not been read, set data-lastread to a default value or omit this part altogether
+			this.item.setAttribute('data-lastread', 'never')
+		}
 		// Set title classes and add text
 		this.title.classList.add('grid-item--title')
 		this.title.classList.add('box-decoration-clone')
@@ -357,8 +377,6 @@ const grid = optimalGridDimensions()
 const Infinite = new InfiniteGrid(grid.cols, grid.rows)
 
 window.addEventListener('resize', () => {
-	// const aspectRatio = window.innerWidth / window.innerHeight
-
 	const grid = optimalGridDimensions()
 	Infinite.setGrid(grid.cols, grid.rows)
 })
