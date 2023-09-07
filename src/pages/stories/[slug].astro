@@ -26,9 +26,10 @@ const { story } = Astro.props
 <Layout dark title='The Yemen Listening Project' header={true} footer={false}>
 	<div class='w-full max-w-5xl mx-auto my-8'>
 		<h1>{story.title}</h1>
-		<p class="text-xl">{story.subheading}</p>
+		<p class='text-xl'>{story.subheading}</p>
 		<Image
 			transition:name='image'
+			quality={50}
 			src={`/downloaded_images/${image.fileName}`}
 			width={image.width}
 			height={image.height}
