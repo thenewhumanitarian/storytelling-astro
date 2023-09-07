@@ -47,19 +47,21 @@ const { stories } = Astro.props
 		will-change: all;
 		transition: transform 0.25s ease-in-out;
 		transform: scale(1);
-		outline: 10px solid transparent;
 	}
 	@media screen and (min-width: 800px) {
+		.grid-item {
+			outline: 10px solid transparent;
+		}
 		.grid-item:hover {
 			transform: scale(1.05);
 			outline: 10px solid black;
 			opacity: 1;
 			z-index: 9999;
 		}
-	}
-	.grid-item:hover .grid-item--title {
-		color: black;
-		background: white;
+		.grid-item:hover .grid-item--title {
+			color: black;
+			background: white;
+		}
 	}
 	.grid-item--title {
 		margin: 0;
