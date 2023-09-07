@@ -6,25 +6,21 @@ export interface Props {
 const { dark } = Astro.props as Props
 ---
 
-<header class={`${dark ? 'bg-black' : 'bg-white'} cursor-default w-full h-20 fixed top-0 left-0 z-50`}>
+<header class={`${dark ? 'bg-black shadow-xs shadow-white' : 'bg-white'} cursor-default w-full h-20 fixed top-0 left-0 z-50`}>
 	<div class='grid grid-cols-3 items-center px-6'>
 		<div class='flex justify-start gap-x-3 items-center'>
-			<a
-				rel={'noopener noreferrer'}
-				target='_blank'
-				class='bg-burgundy text-sm text-white px-2 py-1 hidden sm:block'
-				href='https://www.thenewhumanitarian.org/membership'
-			>
-				Donate
-			</a>
-			<div class={dark ? 'text-white' : 'text-black'}>
-				<svg xmlns='http://www.w3.org/2000/svg' width='20px' height='20px' viewBox='0 0 100 100' class='inline-block'>
-					<path
-						fill={dark ? 'white' : 'black'}
-						d='M74.965 67.27c-3.133 0-6.059 1.04-8.148 3.121l-29.875-17.27c.21-1.039.418-1.875.418-2.914 0-1.04-.211-1.875-.418-2.914L66.399 30.23c2.297 2.082 5.222 3.328 8.566 3.328 6.895 0 12.535-5.617 12.535-12.484 0-6.863-5.64-12.48-12.535-12.48-6.894 0-12.535 5.617-12.535 12.484 0 1.04.207 1.875.418 2.914L33.391 41.055c-2.297-2.082-5.223-3.328-8.566-3.328-6.895 0-12.324 5.617-12.324 12.484s5.64 12.484 12.535 12.484c3.343 0 6.265-1.246 8.566-3.328l29.668 17.27c-.211.832-.418 1.664-.418 2.703 0 6.66 5.43 12.066 12.117 12.066 6.684 0 12.117-5.41 12.117-12.066-.004-6.66-5.434-12.07-12.121-12.07z'
-					></path>
-				</svg>
-				Share
+			<div class={`${dark ? 'text-white' : 'text-black'} fill-current flex gap-5 items-center justify-start`}>
+				<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' class='fill-current text-white'
+					><path d='M0 2v2h24V2Zm0 9v2h24v-2Zm0 9v2h24v-2Z'></path></svg
+				>
+				<a
+					rel={'noopener noreferrer'}
+					target='_blank'
+					class='bg-burgundy text-sm text-white px-2 py-1 hidden sm:block'
+					href='https://www.thenewhumanitarian.org/membership'
+				>
+					Highlight unread stories
+				</a>
 			</div>
 		</div>
 		<div class='flex justify-center'>
@@ -118,7 +114,16 @@ const { dark } = Astro.props as Props
 				</svg>
 			</div>
 		</div>
-		<div class='flex justify-end hidden sm:block'><p class={`${dark ? 'text-white' : ''} font-serif`}>Journalism from the heart of crises</p></div>
+		<div class='justify-end hidden sm:flex'><p class={`${dark ? 'text-white' : ''} font-serif`}>Journalism from the heart of crises</p></div>
+		<div class={`justify-end items-center gap-2 flex sm:hidden ${dark ? 'text-white' : 'text-black'}`}>
+			<svg xmlns='http://www.w3.org/2000/svg' width='20px' height='20px' viewBox='0 0 100 100' class='inline-block'>
+				<path
+					fill={dark ? 'white' : 'black'}
+					d='M74.965 67.27c-3.133 0-6.059 1.04-8.148 3.121l-29.875-17.27c.21-1.039.418-1.875.418-2.914 0-1.04-.211-1.875-.418-2.914L66.399 30.23c2.297 2.082 5.222 3.328 8.566 3.328 6.895 0 12.535-5.617 12.535-12.484 0-6.863-5.64-12.48-12.535-12.48-6.894 0-12.535 5.617-12.535 12.484 0 1.04.207 1.875.418 2.914L33.391 41.055c-2.297-2.082-5.223-3.328-8.566-3.328-6.895 0-12.324 5.617-12.324 12.484s5.64 12.484 12.535 12.484c3.343 0 6.265-1.246 8.566-3.328l29.668 17.27c-.211.832-.418 1.664-.418 2.703 0 6.66 5.43 12.066 12.117 12.066 6.684 0 12.117-5.41 12.117-12.066-.004-6.66-5.434-12.07-12.121-12.07z'
+				></path>
+			</svg>
+			 Share
+		</div>
 
 		<style>
 			header {
