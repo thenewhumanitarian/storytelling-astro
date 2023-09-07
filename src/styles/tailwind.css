@@ -74,9 +74,9 @@
 		@apply no-underline font-medium text-burgundy;
 	}
 
-	a:hover {
+	/* a:hover {
 		@apply underline;
-	}
+	} */
 
 	/* a:focus,
 	a:active {

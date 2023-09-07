@@ -1,5 +1,17 @@
 ---
+import { getImage } from 'astro:assets'
+
 const { stories } = Astro.props
+
+// Map through stories and add optimizedBackgroundImage = await getImage({ src: myImage }) to every single entry
+stories.map(async (story) => {
+	story.backgroundImage = await getImage({
+		src: `/downloaded_images/thumbnails/${story.image.fileName}`,
+		width: story.image.width,
+		height: story.image.height,
+	})
+	return story
+})
 ---
 
 <div class='stories-container' id='stories-container'><div id='grid' class='grid'></div></div>
@@ -143,8 +155,10 @@ class GridItem {
 
 		// Add class "grit-item--link" to this.link element
 		// this.link.classList.add('grid-item--link')
+
 		this.index = index
 		this.item.classList.add('grid-item')
+
 		this.setNewCard()
 	}
 
@@ -154,17 +168,10 @@ class GridItem {
 	}
 
 	setNewCard() {
-		// Vars to be used later
+		// Define vars to be used later
 		let story = stories[this.index % stories.length]
 		let title = stories[this.index % stories.length].title
-		let slug = stories[this.index % stories.length].slug
-		// Give the item this: transition:name="hero"
 		this.item.setAttribute('transition:name', 'image')
-		this.item.setAttribute('transition:animate', 'slide')
-		// Set data URL attribute for this.item (grid-item)
-		this.item.setAttribute('data-url', `/stories/${slug}`)
-		// Add href to this.link element
-		// this.link.setAttribute('href', this.item.getAttribute('data-url'))
 		// Set title classes and add text
 		this.title.classList.add('grid-item--title')
 		this.title.classList.add('box-decoration-clone')
@@ -175,11 +182,12 @@ class GridItem {
 		this.title.classList.add('inline')
 		this.title.innerHTML = title
 		// Set up background image for the item
-		this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${story.image.fileName}')`
+		this.item.style.backgroundImage = `url(${story.backgroundImage.src})`
+		// this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${story.image.fileName}')`
 		this.item.style.backgroundSize = 'cover'
 		this.item.style.backgroundPosition = 'center center'
 		this.item.style.paddingTop = '0'
-		// Add href to this item
+		// Add href to this grid item using slug
 		this.item.setAttribute('href', `/stories/${story.slug}`)
 	}
 }
@@ -384,19 +392,4 @@ function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 150) {
 		rows: bestRows,
 	}
 }
-
-	// Turn .grid-item elements into clickable links
-	// document.addEventListener('DOMContentLoaded', function () {
-	// 	let gridItems = document.querySelectorAll('.grid-item')
-
-	// 	gridItems.forEach(function (item) {
-	// 		item.addEventListener('click', function () {
-	// 			let url = this.getAttribute('data-url')
-
-	// 			if (url) {
-	// 				window.location.href = url
-	// 			}
-	// 		})
-	// 	})
-	// })
 </script>

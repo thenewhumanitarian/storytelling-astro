@@ -1,6 +1,4 @@
 ---
-const { title, image } = Astro.props.story
-
 import Layout from '../../layouts/Layout.astro'
 import stories from '../../data/stories.json'
 
@@ -20,32 +18,45 @@ export async function getStaticPaths() {
 	}))
 }
 
+// Define props
 const { story } = Astro.props
+
+console.log(story)
+
+// Import specific image from /src folder
+// import heroImage from `../../images/downloaded_images/${story.image.fileName}`
 ---
 
 <Layout dark title='The Yemen Listening Project' header={true} footer={false}>
-	<div class='w-full max-w-5xl mx-auto my-8'>
+	<div class='w-full max-w-5xl mx-auto my-8' class='story-detail-page--wrapper'>
 		<h1>{story.title}</h1>
 		<p class='text-xl'>{story.subheading}</p>
+		<!-- <Image src={heroImage} alt="A description of my image." /> -->
+		<!-- Image loaded from /public folder variant -->
 		<Image
 			transition:name='image'
 			quality={50}
-			src={`/downloaded_images/${image.fileName}`}
-			width={image.width}
-			height={image.height}
+			src={`/downloaded_images/${story.image.fileName}`}
+			width={story.image.width}
+			height={story.image.height}
 			decoding='async'
 			loading='lazy'
 			alt={`${story.title}`}
 		/>
+		<p set:html={story.body} class='text-xl' />
 	</div>
 </Layout>
 
-<style>
+<style is:global>
 	body {
 		background: black;
 	}
 
 	body * {
+		color: white;
+	}
+
+	a {
 		color: white;
 	}
 </style>
