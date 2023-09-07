@@ -23,7 +23,7 @@ const { story } = Astro.props
 <Layout dark title='The Yemen Listening Project' header={true} footer={false}>
 	<div class='w-full max-w-5xl mx-auto mt-16 mb-8 sm:mb-24 px-4' class='story-detail-page--wrapper'>
 		<h1 class='text-left w-full'>{story.title}</h1>
-		<p class='text-xl'>{story.subheading}</p>
+		<p class='text-xl mb-10'>{story.subheading}</p>
 		<Image
 			quality={50}
 			src={`/downloaded_images/${story.image.fileName}`}
@@ -32,8 +32,9 @@ const { story } = Astro.props
 			decoding='async'
 			loading='lazy'
 			alt={`${story.title}`}
+			class="w-full"
 		/>
-		<p set:html={story.body} class='text-xl' />
+		<p set:html={story.body} class='text-xl pt-2' />
 	</div>
 </Layout>
 
