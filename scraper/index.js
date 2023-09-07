@@ -12,14 +12,18 @@ const stories = []
 const baseURL = 'https://www.thenewhumanitarian.org'
 const allArticlesURL = baseURL + '/all-articles'
 const outputFolder = 'downloaded_images'
-const targetStoryCount = 100
+const targetStoryCount = 200
 let currentStoryCount = 0
+const thumbnailSize = 200
+const thumbnailOutputFolder = 'thumbnails'
+
+const exampleBodyString = `<h1>HTML Ipsum Presents</h1><p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. <a href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p><h2>Header Level 2</h2><ol><li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li><li>Aliquam tincidunt mauris eu risus.</li></ol><blockquote><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p></blockquote><h3>Header Level 3</h3><ul><li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li><li>Aliquam tincidunt mauris eu risus.</li></ul><pre><code>#header h1 a {display: block;width: 300px;height: 80px;}</code></pre>`
 
 async function createThumbnail(imagePath) {
-	const thumbnailPath = path.join(path.dirname(imagePath), 'thumbnails', path.basename(imagePath))
+	const thumbnailPath = path.join(path.dirname(imagePath), thumbnailOutputFolder, path.basename(imagePath))
 
 	await sharp(imagePath)
-		.resize(200, 200, {
+		.resize(thumbnailSize, thumbnailSize, {
 			// Thumbnail size
 			fit: sharp.fit.cover, // Crop to cover both provided dimensions
 			position: sharp.strategy.entropy, // Focus on the region with the highest entropy
@@ -29,10 +33,10 @@ async function createThumbnail(imagePath) {
 	return thumbnailPath
 }
 
-async function downloadStory(url, filename, title, subheading, index) {
+async function downloadStory(imageUrl, filename, title, subheading, index) {
 	const response = await axios({
 		method: 'GET',
-		url: url,
+		url: imageUrl,
 		responseType: 'stream',
 	})
 
@@ -46,15 +50,27 @@ async function downloadStory(url, filename, title, subheading, index) {
 		writer.on('error', reject)
 	})
 
+	// Use sharp to obtain image dimensions
+	const imageMetadata = await sharp(outputPath).metadata()
+
 	// Add image details to our tracking array
 	stories.push({
 		id: index,
 		title: title,
 		subheading: subheading,
+		body: exampleBodyString,
 		slug: slugify(title),
 		image: {
-			url: url,
+			url: imageUrl,
 			fileName: filename,
+			width: imageMetadata.width, // Set width from sharp metadata
+			height: imageMetadata.height, // Set height from sharp metadata
+		},
+		thumbnail: {
+			url: `/${outputFolder}/${thumbnailOutputFolder}/${filename}`,
+			fileName: filename,
+			width: thumbnailSize,
+			height: thumbnailSize,
 		},
 	})
 
@@ -66,7 +82,7 @@ async function downloadStory(url, filename, title, subheading, index) {
 }
 
 function getFullURL(link) {
-	console.log(link)
+	console.log(`🏞️ Current image URL: ${link}`)
 
 	if (link.startsWith('http') || link.startsWith('https')) {
 		return link
@@ -111,11 +127,16 @@ async function scrapeArticlesFromPage(url, pageNumber = 0) {
 			const title = $$('.article__title').text().trim().normalize('NFC')
 			const subheading = $$('.article__subheading').text().trim().normalize('NFC')
 
+			console.log(`✨ Loading story ${currentStoryCount + 1} of ${targetStoryCount}`)
+
 			await downloadStory(imageUrl, cleanedImageName, title, subheading, currentStoryCount)
 			currentStoryCount++
 		}
 
-		if (currentStoryCount >= targetStoryCount) return
+		if (currentStoryCount >= targetStoryCount) {
+			console.log('👏 All done!')
+			return
+		}
 	}
 
 	// Increment page number and recurse

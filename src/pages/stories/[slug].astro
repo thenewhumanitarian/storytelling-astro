@@ -1,24 +1,50 @@
 ---
+const { title, image } = Astro.props.story
+
 import Layout from '../../layouts/Layout.astro'
 import stories from '../../data/stories.json'
 
+// import the Image component and the image
+import { Image } from 'astro:assets'
+
 export async function getStaticPaths() {
 	console.log(stories)
-	const posts = await Astro.glob('../../posts/*.md')
 
-	return posts.map((post) => ({
+	return stories.map((story) => ({
 		params: {
-			slug: post.frontmatter.slug,
+			slug: story.slug,
 		},
 		props: {
-			post,
+			story,
 		},
 	}))
 }
 
-const { Content, frontmatter } = Astro.props.post
+const { story } = Astro.props
 ---
 
 <Layout dark title='The Yemen Listening Project' header={true} footer={false}>
-	<h1>Single Story Page</h1>
+	<div class='w-full max-w-5xl mx-auto my-8'>
+		<h1>{story.title}</h1>
+		<p class="text-xl">{story.subheading}</p>
+		<Image
+			transition:name='image'
+			src={`/downloaded_images/${image.fileName}`}
+			width={image.width}
+			height={image.height}
+			decoding='async'
+			loading='lazy'
+			alt={`${story.title}`}
+		/>
+	</div>
 </Layout>
+
+<style>
+	body {
+		background: black;
+	}
+
+	body * {
+		color: white;
+	}
+</style>

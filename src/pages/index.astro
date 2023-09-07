@@ -4,6 +4,12 @@ import StoryGrid from '../components/StoryGrid.astro'
 import stories from '../data/stories.json'
 ---
 
-<Layout dark title='The Yemen Listening Project' header={true} footer={false}>
+<Layout dark title='The Yemen Listening Project' header={true} footer={false} button='filter'>
 	<StoryGrid stories={stories} />
 </Layout>
+
+<style>
+	body {
+		background: black;
+	}
+</style>

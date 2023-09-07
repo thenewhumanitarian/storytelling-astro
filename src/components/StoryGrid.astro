@@ -39,6 +39,7 @@ const { stories } = Astro.props
 		gap: 0;
 	}
 	.grid-item {
+		position: relative;
 		background: black;
 		background-size: cover;
 		background-position: center center;
@@ -48,10 +49,10 @@ const { stories } = Astro.props
 		transition: transform 0.25s ease-in-out;
 		transform: scale(1);
 	}
-	.grid-item a:hover {
+	/* .grid-item a:hover {
 		text-decoration: none;
 		pointer-events: none;
-	}
+	} */
 	@media screen and (min-width: 800px) {
 		.grid-item {
 			outline: 10px solid transparent;
@@ -79,6 +80,22 @@ const { stories } = Astro.props
 	.grid-item--title:hover {
 		cursor: pointer;
 	}
+	.grid-item--link {
+		display: none;
+	}
+	.grid-item:hover .grid-item--link {
+		display: block;
+		position: absolute;
+		background: white;
+		color: black;
+		padding: 0.25rem 0.5rem;
+		bottom: 0;
+		right: 0;
+		z-index: 9999;
+	}
+	.grid-item--link:hover {
+		cursor: pointer;
+	}
 	@media screen and (max-width: 500px) {
 		.grid-item--title {
 			font-size: 1.2rem;
@@ -94,9 +111,9 @@ const storiesContainer = document.querySelector('.stories-container')
 
 storiesContainer.addEventListener('mousemove', function () {
 	// Clear any existing timeout
-	if (moveTimeout) {
-		clearTimeout(moveTimeout)
-	}
+	// if (moveTimeout) {
+	// 	clearTimeout(moveTimeout)
+	// }
 
 	// Set the cursor to 'grab' when the mouse is moving
 	this.style.cursor = 'move'
@@ -107,24 +124,26 @@ storiesContainer.addEventListener('mousemove', function () {
 	// }, 250)
 })
 
-/* Grid magic */
 console.clear()
 
+/* Grid magic */
 class GridItem {
 	constructor(index = 0) {
-		this.item = document.createElement('div')
+		this.item = document.createElement('a')
 		// Create h2 element for title
 		this.title = document.createElement('h2')
 		this.item.append(this.title)
-		// Add class "line-clamp-2" to h2 element
-		// Uncomment this line if you need the class added
-		// this.title.classList.add('line-clamp-2')
 
-		// this.img = document.createElement('img')
-		// this.item.append(this.img)
+		// Create <a> element within this.item
+		this.link = document.createElement('a')
 
+		// Add text "Link" to the this.link element
+		this.link.innerHTML = 'Read more →'
+		this.item.append(this.link)
+
+		// Add class "grit-item--link" to this.link element
+		this.link.classList.add('grid-item--link')
 		this.index = index
-		// console.log(index)
 		this.item.classList.add('grid-item')
 		this.setNewCard()
 	}
@@ -139,8 +158,13 @@ class GridItem {
 		let story = stories[this.index % stories.length]
 		let title = stories[this.index % stories.length].title
 		let slug = stories[this.index % stories.length].slug
+		// Give the item this: transition:name="hero"
+		this.item.setAttribute('transition:name', 'image')
+		this.item.setAttribute('transition:animate', 'slide')
 		// Set data URL attribute for this.item (grid-item)
 		this.item.setAttribute('data-url', `/stories/${slug}`)
+		// Add href to this.link element
+		this.link.setAttribute('href', this.item.getAttribute('data-url'))
 		// Set title classes and add text
 		this.title.classList.add('grid-item--title')
 		this.title.classList.add('box-decoration-clone')
@@ -167,6 +191,8 @@ class Drag {
 		this.lastY = null
 		this.handleDrag = handleDrag
 
+		ele.addEventListener('click', this.onClick.bind(this), false)
+
 		ele.addEventListener('touchstart', this.onStart.bind(this), false)
 		ele.addEventListener('touchmove', this.onMove.bind(this), false)
 		ele.addEventListener('touchend', this.onEnd.bind(this), false)
@@ -177,7 +203,17 @@ class Drag {
 		ele.addEventListener('mouseuot', this.onEnd.bind(this))
 	}
 
+	onClick(ev) {
+		ev = ev.type == 'touchstart' ? ev.touches[0] : ev
+
+		if (this.dragging) {
+			e.preventDefault()
+		}
+	}
+
 	onStart(ev) {
+		ev.preventDefault()
+
 		ev = ev.type == 'touchstart' ? ev.touches[0] : ev
 
 		this.dragging = true
@@ -349,18 +385,18 @@ function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 150) {
 	}
 }
 
-// Turn .grid-item elements into clickable links
-document.addEventListener('DOMContentLoaded', function () {
-	let gridItems = document.querySelectorAll('.grid-item')
+	// Turn .grid-item elements into clickable links
+	// document.addEventListener('DOMContentLoaded', function () {
+	// 	let gridItems = document.querySelectorAll('.grid-item')
 
-	gridItems.forEach(function (item) {
-		item.addEventListener('click', function () {
-			let url = this.getAttribute('data-url')
+	// 	gridItems.forEach(function (item) {
+	// 		item.addEventListener('click', function () {
+	// 			let url = this.getAttribute('data-url')
 
-			if (url) {
-				window.location.href = url
-			}
-		})
-	})
-})
+	// 			if (url) {
+	// 				window.location.href = url
+	// 			}
+	// 		})
+	// 	})
+	// })
 </script>

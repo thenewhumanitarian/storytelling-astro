@@ -8,13 +8,14 @@ import '../styles/tailwind.css'
 import '../styles/global.css'
 
 export interface Props {
-	title?: string
+	button?: string
 	dark?: boolean
-	header?: boolean
 	footer?: boolean
+	header?: boolean
+	title?: string
 }
 
-const { dark, footer, header, title } = Astro.props as Props
+const { button, dark, footer, header, title } = Astro.props as Props
 ---
 
 <!doctype html>
@@ -30,7 +31,7 @@ const { dark, footer, header, title } = Astro.props as Props
 	</head>
 	<body>
 		<!-- Header  -->
-		{header && <Header dark={dark} />}
+		{header && <Header dark={dark} button={button} />}
 		<!-- Main content -->
 		<slot />
 		<!-- Footer  -->
