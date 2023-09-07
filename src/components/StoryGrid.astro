@@ -48,6 +48,10 @@ const { stories } = Astro.props
 		transition: transform 0.25s ease-in-out;
 		transform: scale(1);
 	}
+	.grid-item a:hover {
+		text-decoration: none;
+		pointer-events: none;
+	}
 	@media screen and (min-width: 800px) {
 		.grid-item {
 			outline: 10px solid transparent;
@@ -67,8 +71,10 @@ const { stories } = Astro.props
 		margin: 0;
 		box-decoration-break: clone;
 		font-size: 1.4rem;
-		line-height: 1.25;
+		line-height: 1.15;
 		padding: 0 0.4rem;
+		/* pointer-events: auto; */
+		cursor: pointer;
 	}
 	.grid-item--title:hover {
 		cursor: pointer;
@@ -96,9 +102,9 @@ storiesContainer.addEventListener('mousemove', function () {
 	this.style.cursor = 'move'
 
 	// After 1 second of no movement, set the cursor to 'pointer'
-	moveTimeout = setTimeout(() => {
-		this.style.cursor = 'pointer'
-	}, 250)
+	// moveTimeout = setTimeout(() => {
+	// 	this.style.cursor = 'pointer'
+	// }, 250)
 })
 
 /* Grid magic */
@@ -107,14 +113,16 @@ console.clear()
 class GridItem {
 	constructor(index = 0) {
 		this.item = document.createElement('div')
-		// Create h2 element and add to grid element
+		// Create h2 element for title
 		this.title = document.createElement('h2')
-		// Add class "line-clamp-2" to h2 element
-		// this.title.classList.add('line-clamp-2')
 		this.item.append(this.title)
-		// this.item.append(document)
+		// Add class "line-clamp-2" to h2 element
+		// Uncomment this line if you need the class added
+		// this.title.classList.add('line-clamp-2')
+
 		// this.img = document.createElement('img')
 		// this.item.append(this.img)
+
 		this.index = index
 		// console.log(index)
 		this.item.classList.add('grid-item')
@@ -127,8 +135,13 @@ class GridItem {
 	}
 
 	setNewCard() {
+		// Vars to be used later
 		let story = stories[this.index % stories.length]
 		let title = stories[this.index % stories.length].title
+		let slug = stories[this.index % stories.length].slug
+		// Set data URL attribute for this.item (grid-item)
+		this.item.setAttribute('data-url', `/stories/${slug}`)
+		// Set title classes and add text
 		this.title.classList.add('grid-item--title')
 		this.title.classList.add('box-decoration-clone')
 		this.title.classList.add('px-2')
@@ -137,12 +150,11 @@ class GridItem {
 		this.title.classList.add('bg-black')
 		this.title.classList.add('inline')
 		this.title.innerHTML = title
+		// Set up background image for the item
 		this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${story.image.fileName}')`
 		this.item.style.backgroundSize = 'cover'
 		this.item.style.backgroundPosition = 'center center'
 		this.item.style.paddingTop = '0'
-		// Add target="_blank" to this item
-		this.item.setAttribute('target', '_self')
 		// Add href to this item
 		this.item.setAttribute('href', `/stories/${story.slug}`)
 	}
@@ -336,4 +348,19 @@ function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 150) {
 		rows: bestRows,
 	}
 }
+
+// Turn .grid-item elements into clickable links
+document.addEventListener('DOMContentLoaded', function () {
+	let gridItems = document.querySelectorAll('.grid-item')
+
+	gridItems.forEach(function (item) {
+		item.addEventListener('click', function () {
+			let url = this.getAttribute('data-url')
+
+			if (url) {
+				window.location.href = url
+			}
+		})
+	})
+})
 </script>
