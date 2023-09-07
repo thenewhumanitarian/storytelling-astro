@@ -66,7 +66,7 @@ const { stories } = Astro.props
 		.grid-item:not(.filter--read):hover,
 		.grid-item[data-lastread='never']:hover {
 			transform: scale(1.05);
-			outline: 10px solid black;
+			outline: 0.7rem solid white;
 			opacity: 1;
 			z-index: 9999;
 		}
@@ -154,10 +154,29 @@ window.addEventListener('pageshow', function () {
 	Infinite.setGrid(grid.cols, grid.rows)
 })
 
+/* Cursor management */
+
+let moveTimeout
+
 const storiesContainer = document.querySelector('.stories-container')
 
 storiesContainer.addEventListener('mousemove', function () {
 	this.style.cursor = 'move'
+})
+
+storiesContainer.addEventListener('mousemove', function () {
+	// Clear any existing timeout
+	if (moveTimeout) {
+		clearTimeout(moveTimeout)
+	}
+
+	// Set the cursor to 'grab' when the mouse is moving
+	this.style.cursor = 'move'
+
+	// After 1 second of no movement, set the cursor to 'pointer'
+	// moveTimeout = setTimeout(() => {
+	// 	this.style.cursor = 'pointer'
+	// }, 250)
 })
 
 console.clear()
@@ -208,7 +227,7 @@ class GridItem {
 		this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${story.image.fileName}')`
 		this.item.style.backgroundSize = 'cover'
 		this.item.style.backgroundPosition = 'center center'
-		this.item.style.paddingTop = '0'
+		this.item.style.paddingTop = '1rem'
 		// Add href to this grid item using slug
 		this.item.setAttribute('href', `/stories/${story.slug}`)
 	}
