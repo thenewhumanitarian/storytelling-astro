@@ -21,9 +21,17 @@ const { story } = Astro.props
 ---
 
 <Layout dark title='The Yemen Listening Project' header={true} footer={false}>
-	<div class='w-full max-w-5xl mx-auto mt-16 mb-8 sm:mb-24 px-4' class='story-detail-page--wrapper'>
+	<div class='w-full max-w-5xl mx-auto mt-4 sm:mt-16 mb-8 sm:mb-24 px-4' class='story-detail-page--wrapper' id="story-wrapper">
+		<a href='/' target='_self'>
+			<button
+				class='bg-burgundy text-base sm:text-lg rounded-xs text-white px-2 py-1 flex justify-center items-center gap-x-1 mb-6'
+				id='back-button'
+			>
+				<span>←</span><span class="inline">Back</span>
+			</button>
+		</a>
 		<h1 class='text-left w-full'>{story.title}</h1>
-		<p class='text-xl mb-10'>{story.subheading}</p>
+		<p class='text-xl mb-^6 sm:mb-10'>{story.subheading}</p>
 		<Image
 			quality={50}
 			src={`/downloaded_images/${story.image.fileName}`}
@@ -47,8 +55,18 @@ const { story } = Astro.props
 		color: white;
 	}
 
+	.story-w
+
 	a {
 		color: white;
+	}
+
+	#story-wrapper * {
+		text-align: left;
+	}
+
+	#story-wrapper code {
+		display: none;
 	}
 </style>
 

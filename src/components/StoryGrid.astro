@@ -108,7 +108,8 @@ const { stories } = Astro.props
 	}
 	@media screen and (max-width: 500px) {
 		.grid-item--title {
-			font-size: 1.2rem;
+			font-size: 1rem;
+			height: auto;
 		}
 	}
 </style>
@@ -221,13 +222,15 @@ class GridItem {
 		this.title.classList.add('text-white')
 		this.title.classList.add('bg-black')
 		this.title.classList.add('inline')
+		this.title.classList.add('pt-0')
+		this.title.classList.add('sm:pt-8')
 		this.title.innerHTML = title
 		// Set up background image for the item
 		// this.item.style.backgroundImage = `url(${story.backgroundImage.src || `/downloaded_images/thumbnails/${story.image.fileName}`})`
 		this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${story.image.fileName}')`
 		this.item.style.backgroundSize = 'cover'
 		this.item.style.backgroundPosition = 'center center'
-		this.item.style.paddingTop = '1rem'
+		// this.item.style.paddingTop = '1rem'
 		// Add href to this grid item using slug
 		this.item.setAttribute('href', `/stories/${story.slug}`)
 	}
@@ -400,7 +403,7 @@ window.addEventListener('resize', () => {
 	Infinite.setGrid(grid.cols, grid.rows)
 })
 
-function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 150) {
+function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 130) {
 	const width = window.innerWidth
 	const height = window.innerHeight
 
