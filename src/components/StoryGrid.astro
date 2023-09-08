@@ -224,13 +224,12 @@ class GridItem {
 		this.title.classList.add('inline')
 		this.title.classList.add('pt-0')
 		this.title.classList.add('sm:pt-8')
+		this.title.classList.add('pointer-events-none')
+		this.title.classList.add('sm:pointer-events-auto')
 		this.title.innerHTML = title
-		// Set up background image for the item
-		// this.item.style.backgroundImage = `url(${story.backgroundImage.src || `/downloaded_images/thumbnails/${story.image.fileName}`})`
 		this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${story.image.fileName}')`
 		this.item.style.backgroundSize = 'cover'
 		this.item.style.backgroundPosition = 'center center'
-		// this.item.style.paddingTop = '1rem'
 		// Add href to this grid item using slug
 		this.item.setAttribute('href', `/stories/${story.slug}`)
 	}
@@ -242,8 +241,13 @@ class Drag {
 		this.lastX = null
 		this.lastY = null
 		this.handleDrag = handleDrag
+		this.touchStartTime = 0
 
 		ele.addEventListener('click', this.onClick.bind(this), false)
+
+		// if ('ontouchend' in window && window.innerWidth <= 768) { // 768px can be adjusted based on your mobile breakpoint
+		// 		ele.addEventListener('touchend', this.onTap.bind(this));
+		// }
 
 		ele.addEventListener('touchstart', this.onStart.bind(this), false)
 		ele.addEventListener('touchmove', this.onMove.bind(this), false)
@@ -255,26 +259,42 @@ class Drag {
 		ele.addEventListener('mouseuot', this.onEnd.bind(this))
 	}
 
+	// onTap(ev) {
+	// 	ev = ev.type == 'touchstart' ? ev.touches[0] : ev
+
+	// 	if (this.dragging) {
+	// 		console.log('is dragging')
+	// 		ev.preventDefault()
+	// 	}
+	// }
+
 	onClick(ev) {
 		ev = ev.type == 'touchstart' ? ev.touches[0] : ev
 
 		if (this.dragging) {
-			e.preventDefault()
+			ev.preventDefault()
 		}
 	}
 
 	onStart(ev) {
+		this.touchStartTime = Date.now()
 		ev.preventDefault()
 
 		ev = ev.type == 'touchstart' ? ev.touches[0] : ev
 
 		this.dragging = true
+
+		// this.dragging = true
 		this.lastX = ev.clientX
 		this.lastY = ev.clientY
 	}
 
 	onMove(ev) {
 		if (!this.dragging) return
+
+		// Calculate the duration of the tap
+		const touchDuration = Date.now() - this.touchStartTime;
+		console.log(touchDuration)
 
 		ev = ev.type == 'touchmove' ? ev.touches[0] : ev
 		let xDelta = ev.clientX - this.lastX
@@ -297,8 +317,24 @@ class Drag {
 		this.lastX = ev.clientX
 		this.lastY = ev.clientY
 	}
+
 	onEnd(ev) {
 		this.dragging = false
+
+		// Calculate the duration of the tap
+		const touchDuration = Date.now() - this.touchStartTime;
+		console.log(touchDuration)
+
+		// Check duration and act accordingly
+		if (touchDuration < 100) { // This checks if the touch lasted less than 500ms
+			// This was a short tap
+			if (event.target.tagName.toLowerCase() === 'a') {
+				const href = event.target.getAttribute('href');
+				if (href) {
+						window.location = href;
+				}
+			}
+		} 
 	}
 }
 class InfiniteGrid {
