@@ -45,6 +45,7 @@ const { stories } = Astro.props
 		position: relative;
 		background: black;
 		background-size: cover;
+		/* image-rendering: pixelated; */
 		background-position: center center;
 		user-select: none;
 		overflow: hidden;
@@ -52,13 +53,26 @@ const { stories } = Astro.props
 		transition: transform 0.25s ease-in-out;
 		transform: scale(1);
 	}
+	.grid-item img {
+		z-index: -1;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	.full-image {
+		opacity: 0;
+		transition: opacity 0.5s ease;
+	}
+	.full-image.loaded {
+		opacity: 1;
+	}
 	.filter--read .grid-item:not([data-lastread='never']) {
 		opacity: 0.2;
 	}
-	/* .grid-item a:hover {
-		text-decoration: none;
-		pointer-events: none;
-	} */
 	@media screen and (min-width: 800px) {
 		.grid-item {
 			outline: 10px solid transparent;
@@ -121,7 +135,7 @@ if (localStorage.getItem('showAll') === 'false') {
 	document.getElementById('grid').classList.remove('filter--read')
 }
 
-// window.addEventListener('DOMContentLoaded', function () {
+// Window load event
 window.addEventListener('pageshow', function () {
 	// Add class to #grid if localStorage('showAll') is set to false
 	if (localStorage.getItem('showAll') === 'false') {
@@ -155,40 +169,20 @@ window.addEventListener('pageshow', function () {
 	Infinite.setGrid(grid.cols, grid.rows)
 })
 
-/* Cursor management */
-
-let moveTimeout
-
-const storiesContainer = document.querySelector('.stories-container')
-
-storiesContainer.addEventListener('mousemove', function () {
-	this.style.cursor = 'move'
-})
-
-storiesContainer.addEventListener('mousemove', function () {
-	// Clear any existing timeout
-	if (moveTimeout) {
-		clearTimeout(moveTimeout)
-	}
-
-	// Set the cursor to 'grab' when the mouse is moving
-	this.style.cursor = 'move'
-
-	// After 1 second of no movement, set the cursor to 'pointer'
-	// moveTimeout = setTimeout(() => {
-	// 	this.style.cursor = 'pointer'
-	// }, 250)
-})
-
-console.clear()
-
 /* Grid magic */
 class GridItem {
 	constructor(index = 0) {
+		// Create anchor element for grid item as a container
 		this.item = document.createElement('a')
+
+		// Variable to check if currently loading image
+		this.currentLoadingImage = null
+
 		// Create h2 element for title
 		this.title = document.createElement('h2')
 		this.item.append(this.title)
+
+		// Set index and add classes
 		this.index = index
 		this.item.classList.add('grid-item')
 		this.setNewCard()
@@ -199,11 +193,45 @@ class GridItem {
 		this.setNewCard()
 	}
 
+	isImageLoaded() {
+		return this.item.querySelector('img') !== null
+	}
+
 	setNewCard() {
 		// Define vars to be used later
 		let story = stories[this.index % stories.length]
 		let title = stories[this.index % stories.length].title
-		// this.item.setAttribute('transition:name', 'image')
+
+		// Determine the new image URL
+		let newImageUrl = `/downloaded_images/thumbnails/${story.image.fileName}`
+
+		// Check if there's already an <img> element inside the grid-item
+		let currentImageElement = this.item.querySelector('img')
+
+		// If there's an image and its source is the same as the new image, return early
+		if (currentImageElement && currentImageElement.src === newImageUrl) {
+			return
+		}
+
+		// Remove the previous image if it's different or if there wasn't any image
+		if (currentImageElement) {
+			currentImageElement.remove()
+		}
+
+		// Set the background to the placeholder
+		this.item.style.backgroundImage = `url('/downloaded_images/placeholders/${story.image.fileName}')`
+
+		// Check for initial load to decide between lazy loading or direct image set
+		if (this.initialLoad) {
+			this.lazyLoadImage(story.image.fileName)
+		} else {
+			const imageElement = document.createElement('img')
+			imageElement.src = newImageUrl
+			imageElement.classList.add('full-image')
+			imageElement.classList.add('loaded') // Immediately show it, since we're not lazy loading now
+			this.item.appendChild(imageElement)
+		}
+
 		// Check if article was read before and write date of last read if that's the case
 		let readArticles = JSON.parse(localStorage.getItem('readArticles')) || []
 		let readArticle = readArticles.find((article) => article.slug === story.slug)
@@ -214,6 +242,10 @@ class GridItem {
 			// If the current article has not been read, set data-lastread to a default value or omit this part altogether
 			this.item.setAttribute('data-lastread', 'never')
 		}
+
+		// Set title for the grid item
+		this.title.innerHTML = title
+
 		// Set title classes and add text
 		this.title.classList.add('grid-item--title')
 		this.title.classList.add('box-decoration-clone')
@@ -226,12 +258,56 @@ class GridItem {
 		this.title.classList.add('sm:pt-8')
 		this.title.classList.add('pointer-events-none')
 		this.title.classList.add('sm:pointer-events-auto')
-		this.title.innerHTML = title
-		this.item.style.backgroundImage = `url('/downloaded_images/thumbnails/${story.image.fileName}')`
-		this.item.style.backgroundSize = 'cover'
-		this.item.style.backgroundPosition = 'center center'
+
+		// Add data-bg attribute to the element to load image later
+		this.item.setAttribute('data-bg', `/downloaded_images/thumbnails/${story.image.fileName}`)
+
+		// Lazy load the image to replace the blurry placeholder
+		if (!this.isImageLoaded()) {
+			this.lazyLoadImage(story.image.fileName)
+		}
+
 		// Add href to this grid item using slug
 		this.item.setAttribute('href', `/stories/${story.slug}`)
+	}
+
+	lazyLoadImage(fileName, altText) {
+		// Create new image
+		const img = new Image()
+
+		// Start loading the image
+		img.src = `/downloaded_images/thumbnails/${fileName}`
+
+		// Store reference to the image in the class
+		this.currentLoadingImage = img
+
+		// This flag helps us determine if the image was loaded synchronously
+		let wasLoadedFromCache = false
+
+		img.onload = () => {
+			if (this.currentLoadingImage === img) {
+				const imageElement = document.createElement('img')
+				imageElement.src = img.src
+				imageElement.classList.add('full-image')
+				this.item.appendChild(imageElement)
+
+				// This ensures the next repaint will have the image added but not visible
+				requestAnimationFrame(() => {
+					requestAnimationFrame(() => {
+						imageElement.classList.add('loaded')
+					})
+				})
+			}
+		}
+
+		img.onerror = () => {
+			console.error('Failed to load image:', fileName)
+		}
+
+		// Check if it was loaded immediately
+		if (img.complete || img.readyState === 4) {
+			wasLoadedFromCache = true
+		}
 	}
 }
 
@@ -293,8 +369,8 @@ class Drag {
 		if (!this.dragging) return
 
 		// Calculate the duration of the tap
-		const touchDuration = Date.now() - this.touchStartTime;
-		console.log(touchDuration)
+		const touchDuration = Date.now() - this.touchStartTime
+		// console.log(touchDuration)
 
 		ev = ev.type == 'touchmove' ? ev.touches[0] : ev
 		let xDelta = ev.clientX - this.lastX
@@ -322,19 +398,20 @@ class Drag {
 		this.dragging = false
 
 		// Calculate the duration of the tap
-		const touchDuration = Date.now() - this.touchStartTime;
-		console.log(touchDuration)
+		const touchDuration = Date.now() - this.touchStartTime
+		// console.log(touchDuration)
 
 		// Check duration and act accordingly
-		if (touchDuration < 100) { // This checks if the touch lasted less than 500ms
+		if (touchDuration < 100) {
+			// This checks if the touch lasted less than 500ms
 			// This was a short tap
 			if (event.target.tagName.toLowerCase() === 'a') {
-				const href = event.target.getAttribute('href');
+				const href = event.target.getAttribute('href')
 				if (href) {
-						window.location = href;
+					window.location = href
 				}
 			}
-		} 
+		}
 	}
 }
 class InfiniteGrid {
@@ -394,15 +471,17 @@ class InfiniteGrid {
 		return index
 	}
 
-	setGrid(nCol = 2, nRow = 2) {
+	async setGrid(nCol = 2, nRow = 2) {
 		if (nCol === this.cols && nRow === this.rows) return
 
 		// Overshoot items
 		const cols = nCol + 2
 		const rows = nRow + 2
+
 		// Add space for 2 more rows and columns using the current col/row size
 		this.container.style.width = `${100 + (100 / nCol) * 2}vw`
 		this.container.style.height = `${100 + (100 / nRow) * 2}vh`
+
 		// Move the grid back by 1 col and row
 		this.container.style.transform = `translate(${-100 / nCol}vw, ${-100 / nRow}vh)`
 
