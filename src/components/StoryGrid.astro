@@ -77,8 +77,8 @@ const { stories } = Astro.props
 		.grid-item {
 			outline: 10px solid transparent;
 		}
-		.grid-item:not(.filter--read):hover,
-		.grid-item[data-lastread='never']:hover {
+		body:not(.disable-hover)  .grid-item:not(.filter--read):hover,
+		body:not(.disable-hover) .grid-item[data-lastread='never']:hover {
 			transform: scale(1.05);
 			outline: 0.7rem solid white;
 			opacity: 1;
@@ -356,6 +356,9 @@ class Drag {
 		this.touchStartTime = Date.now()
 		ev.preventDefault()
 
+		// Disable hover classes temporarily
+		document.body.classList.add('disable-hover')
+
 		ev = ev.type == 'touchstart' ? ev.touches[0] : ev
 
 		this.dragging = true
@@ -396,6 +399,8 @@ class Drag {
 
 	onEnd(ev) {
 		this.dragging = false
+
+		document.body.classList.remove('disable-hover')
 
 		// Calculate the duration of the tap
 		const touchDuration = Date.now() - this.touchStartTime
