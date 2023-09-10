@@ -10,6 +10,10 @@ const { stories } = Astro.props
 <script src='https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js' is:inline></script>
 
 <style is:global>
+	body.is-dragging .grid-item h2,
+	body.is-dragging .grid-item {
+		cursor: move;
+	}
 	header {
 		/* Makes header fixed whenever a Storygrid is present */
 		position: fixed;
@@ -77,8 +81,8 @@ const { stories } = Astro.props
 		.grid-item {
 			outline: 10px solid transparent;
 		}
-		body:not(.disable-hover)  .grid-item:not(.filter--read):hover,
-		body:not(.disable-hover) .grid-item[data-lastread='never']:hover {
+		body:not(.is-dragging)  .grid-item:not(.filter--read):hover,
+		body:not(.is-dragging) .grid-item[data-lastread='never']:hover {
 			transform: scale(1.05);
 			outline: 0.7rem solid white;
 			opacity: 1;
@@ -357,7 +361,7 @@ class Drag {
 		ev.preventDefault()
 
 		// Disable hover classes temporarily
-		document.body.classList.add('disable-hover')
+		document.body.classList.add('is-dragging')
 
 		ev = ev.type == 'touchstart' ? ev.touches[0] : ev
 
@@ -400,7 +404,7 @@ class Drag {
 	onEnd(ev) {
 		this.dragging = false
 
-		document.body.classList.remove('disable-hover')
+		document.body.classList.remove('is-dragging')
 
 		// Calculate the duration of the tap
 		const touchDuration = Date.now() - this.touchStartTime
