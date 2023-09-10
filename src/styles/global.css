@@ -99,3 +99,8 @@ h3 {
 		text-align: center;
 	}
 }
+
+body.no-scroll {
+	overflow: hidden;
+	height: 100% !important;
+}

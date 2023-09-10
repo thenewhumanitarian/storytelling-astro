@@ -14,11 +14,22 @@ const { stories } = Astro.props
 	body.is-dragging .grid-item {
 		cursor: move;
 	}
+
 	header {
-		/* Makes header fixed whenever a Storygrid is present */
 		position: fixed;
 		z-index: 9999 !important;
 	}
+
+	.stories-container {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100vh;
+		z-index: 5555;
+		overflow: hidden;
+	}
+
 	.stories-container span {
 		position: fixed;
 		z-index: 5000;
@@ -28,28 +39,20 @@ const { stories } = Astro.props
 		height: 50px;
 		background: white;
 	}
-	.stories-container {
-		top: 0;
-		left: 0;
-		position: fixed;
-		display: block;
-		overflow: hidden;
-		width: 100%;
-		height: 100vh;
-		z-index: 5555;
-	}
+
 	.grid {
 		display: grid;
 		width: 100%;
 		height: 100%;
-		overflow: hidden;
 		gap: 0;
+		overflow: hidden;
 	}
+
 	.grid-item {
 		position: relative;
 		background: black;
 		background-size: cover;
-		/* image-rendering: pixelated; */
+		image-rendering: pixelated;
 		background-position: center center;
 		user-select: none;
 		overflow: hidden;
@@ -57,62 +60,60 @@ const { stories } = Astro.props
 		transition: transform 0.25s ease-in-out;
 		transform: scale(1);
 	}
+
 	.grid-item img {
+		position: absolute;
+		top: 0;
+		left: 0;
 		z-index: -1;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		position: absolute;
-		top: 0;
-		left: 0;
 	}
 
 	.full-image {
 		opacity: 0;
 		transition: opacity 0.5s ease;
 	}
+
 	.full-image.loaded {
 		opacity: 1;
 	}
+
 	.filter--read .grid-item:not([data-lastread='never']) {
 		opacity: 0.2;
+		pointer-events: none;
 	}
+
 	@media screen and (min-width: 800px) {
 		.grid-item {
 			outline: 10px solid transparent;
 		}
+
 		body:not(.is-dragging) .grid-item:not(.filter--read):hover,
 		body:not(.is-dragging) .grid-item[data-lastread='never']:hover {
 			transform: scale(1.05);
 			outline: 0.7rem solid white;
-			opacity: 1;
 			z-index: 9999;
 		}
-		.filter--read .grid-item[data-lastread='never']:hover .grid-item--title {
+
+		body:not(.is-dragging) .filter--read .grid-item[data-lastread='never']:hover .grid-item--title {
 			color: black;
 			background: white;
 		}
-		.filter--read .grid-item:not([data-lastread='never']) {
-			pointer-events: none;
-		}
 	}
+
 	.grid-item--title {
 		margin: 0;
 		box-decoration-break: clone;
 		font-size: 1.4rem;
 		line-height: 1.15;
 		padding: 0 0.4rem;
-		/* pointer-events: auto; */
 		cursor: pointer;
 	}
-	.grid-item--title:hover {
-		cursor: pointer;
-	}
+
 	.grid-item--link {
 		display: none;
-	}
-	.grid-item:hover .grid-item--link {
-		display: block;
 		position: absolute;
 		background: white;
 		color: black;
@@ -121,9 +122,11 @@ const { stories } = Astro.props
 		right: 0;
 		z-index: 9999;
 	}
-	.grid-item--link:hover {
-		cursor: pointer;
+
+	.grid-item:hover .grid-item--link {
+		display: block;
 	}
+
 	@media screen and (max-width: 500px) {
 		.grid-item--title {
 			font-size: 1rem;
@@ -133,38 +136,34 @@ const { stories } = Astro.props
 </style>
 
 <script async define:vars={{ stories }} is:inline>
-if (localStorage.getItem('showAll') === 'false') {
-	document.getElementById('grid').classList.add('filter--read')
-} else {
-	document.getElementById('grid').classList.remove('filter--read')
-}
-
-// Window load event
-window.addEventListener('pageshow', function () {
-	// Add class to #grid if localStorage('showAll') is set to false
+// Initial check to filter grid if necessary
+function filterGridBasedOnLocalStorage() {
 	if (localStorage.getItem('showAll') === 'false') {
 		document.getElementById('grid').classList.add('filter--read')
 	} else {
 		document.getElementById('grid').classList.remove('filter--read')
 	}
-	// Get the read articles from localStorage or use an empty array if it doesn't exist
+}
+
+filterGridBasedOnLocalStorage()
+
+// Window load event
+window.addEventListener('pageshow', function () {
+	filterGridBasedOnLocalStorage()
+
+	// Get read articles or default to an empty array
 	let readArticles = JSON.parse(localStorage.getItem('readArticles')) || []
 
-	// Loop through all .grid-element items on the page
-	let gridElements = document.querySelectorAll('.grid-element')
-	gridElements.forEach((element) => {
-		// Assuming each .grid-element has a data attribute (e.g., data-slug) that stores its slug
-		let slug = element.getAttribute('data-slug')
+	// Update grid elements based on read articles
+	document.querySelectorAll('.grid-element').forEach((element) => {
+		const slug = element.getAttribute('data-slug')
+		const readArticle = readArticles.find((article) => article.slug === slug)
 
-		// Find the corresponding read article based on the slug
-		let readArticle = readArticles.find((article) => article.slug === slug)
-
+		// Update element based on whether the article has been read before
 		if (readArticle) {
-			// If the article has been read before, set the data-lastread attribute
 			element.setAttribute('data-lastread', readArticle.timestamp)
 			element.style.opacity = 0.2
 		} else {
-			// If the article hasn't been read, remove the data-lastread attribute (if it exists)
 			element.setAttribute('data-lastread', 'never')
 		}
 	})

@@ -9,19 +9,18 @@ const { button, dark } = Astro.props as Props
 
 <header class={`${dark ? 'bg-black shadow-xs shadow-white' : 'bg-white'} flex items-center justify-between w-full cursor-default h-20 top-0 left-0 z-50`}>
 	<div class='grid grid-cols-3 items-center px-6 w-full'>
-		<div class='flex justify-start gap-x-3 items-center'>
+		<div class='flex justify-start gap-x-2 sm:gap-x-8 items-center'>
 			<div class={`${dark ? 'text-white' : 'text-black'} fill-current flex gap-3 items-center justify-start`}>
-				<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' class='fill-current text-white'>
+				<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' class='fill-current text-white' id="menu-button">
 					<path d='M0 2v2h24V2Zm0 9v2h24v-2Zm0 9v2h24v-2Z'></path>
 				</svg>
 				{
 					button === 'filter' && (
 						<div class='fixed top-24 left-5 sm:top-0 sm:left-0 shadow-lg sm:shadow-none sm:relative flex items-center gap-3 z-50'>
 							<div class='gap-2 ml-4 hidden sm:flex'>
-								<svg width='14px' viewBox='0 0 117 118' fill='none' xmlns='http://www.w3.org/2000/svg'>
+								<svg width='14px' viewBox='0 0 117 118' xmlns='http://www.w3.org/2000/svg'>
 									<path
 										d='M4.50008 0.333252C1.37501 0.333252 -0.708187 3.87485 0.95848 6.58325L46.1665 66.9993V112.833C46.1665 115.958 49.4998 118.041 52.2081 116.583L68.8747 108.249C70.3331 107.624 71.1665 106.166 71.1665 104.499V66.9993L116.374 6.58325C118.041 3.87499 115.958 0.333252 112.833 0.333252H4.50008Z'
-										fill='white'
 									/>
 								</svg>
 								<!-- <span>Filter:</span> -->
@@ -148,90 +147,158 @@ const { button, dark } = Astro.props as Props
 			 Share
 		</div>
 
-		<script>
-			let blinkCount = 0
-			const cursorElement = document.querySelector('#cursor')
-			const blinkInterval = setInterval(() => {
-				// Check the current display value and toggle it
-				if (cursorElement.style.display === 'none') {
-					cursorElement.style.display = 'block'
-				} else {
-					cursorElement.style.display = 'none'
-				}
-
-				blinkCount++
-
-				if (blinkCount === 10) {
-					clearInterval(blinkInterval) // Stop the interval after 10 blinks
-				}
-			}, 500)
-
-			// Select both buttons by ID
-			const buttonAll = document.querySelector('#filter-button--all')
-			const buttonUnread = document.querySelector('#filter-button--unread')
-
-			function onButtonAllHandler() {
-				localStorage.setItem('showAll', 'true')
-				buttonAll.classList.remove('bg-black')
-				buttonAll.classList.add('bg-burgundy')
-				buttonUnread.classList.add('bg-black')
-				buttonUnread.classList.remove('bg-burgundy')
-				document.querySelector('#grid').classList.remove('filter--read')
-			}
-
-			function onButtonUnreadHandler() {
-				localStorage.setItem('showAll', 'false')
-				buttonAll.classList.remove('bg-burgundy')
-				buttonAll.classList.add('bg-black')
-				buttonUnread.classList.add('bg-burgundy')
-				buttonUnread.classList.remove('bg-black')
-				document.querySelector('#grid').classList.add('filter--read')
-			}
-
-			// Named function for the event listener
-			function toggleShowAll(event) {
-				if (!event) {
-					if (localStorage.getItem('showAll') === 'false' || !localStorage.getItem('showAll')) {
-						onButtonUnreadHandler()
-					} else {
-						onButtonAllHandler()
-					}
-				} else {
-					// Get the id of the clicked button
-					const buttonId = event.currentTarget.id;
-	
-					// Decide what to do based on the button's ID
-					switch (buttonId) {
-						case 'filter-button--all':
-								onButtonAllHandler()
-								break;
-						case 'filter-button--unread':
-								onButtonUnreadHandler()
-								break;
-						// Add cases for other buttons as necessary
-						default:
-								console.error('Unknown button ID:', buttonId);
-								break;
-						}
-				}
-			}
-
-			// DOMContentLoaded
-			document.addEventListener('DOMContentLoaded', () => {
-				toggleShowAll()
-
-				// Add event listeners to all buttons with class .filter-button
-				const buttons = document.querySelectorAll('.filter-button');
-				for (let button of buttons) {
-						button.addEventListener('click', toggleShowAll);
-				}
-			})
-		</script>
 	</div>
 </header>
+
+<div id="menu-overlay" class="flex top-0 left-0 w-full h-screen bg-black items-center justify-center z-40">
+	<div class="flex flex-row gap-x-5">
+		<nav class="space-y-4 flex flex-col text-right">
+			<a href="/about-this-project" class="text-white text-lg sm:text-4xl hover:text-burgundy transition-colors">حول هذا المشروع</a>
+			<a href="/give-us-feedback" class="text-white text-lg sm:text-4xl hover:text-burgundy transition-colors">أخبرنا عن انطباعك</a>
+			<a href="/share" class="text-white text-lg sm:text-4xl hover:text-burgundy transition-colors">رابط آخر</a>
+			<!-- Add more links as needed -->
+		</nav>
+		<nav class="space-y-4 flex flex-col text-left">
+			<a href="/about-this-project" class="text-white text-lg sm:text-4xl hover:text-burgundy transition-colors">About this project</a>
+			<a href="/give-us-feedback" class="text-white text-lg sm:text-4xl hover:text-burgundy transition-colors">Give us feedback</a>
+			<a href="/share" class="text-white text-lg sm:text-4xl hover:text-burgundy transition-colors">Another link</a>
+			<!-- Add more links as needed -->
+		</nav>
+	</div>
+	<div class="text-white absolute top-24 right-10 w-10 h-10 cursor-pointer hover:text-burgundy transition-colors" id="close-button">
+		<svg class="fill-current" width="100%" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path class="fill-current" fill-rule="evenodd" clip-rule="evenodd" d="M1.84937 1.84937C4.02123 -0.317302 7.53683 -0.317302 9.7087 1.84937L44.6674 36.8134L79.626 1.84937C81.7979 -0.317302 85.3135 -0.317302 87.4854 1.84937C89.652 4.02123 89.652 7.53683 87.4854 9.7087L52.5214 44.6674L87.4854 79.626C89.652 81.7979 89.652 85.3135 87.4854 87.4854C85.3135 89.652 81.7979 89.652 79.626 87.4854L44.6674 52.5214L9.7087 87.4854C7.53683 89.652 4.02123 89.652 1.84937 87.4854C-0.317302 85.3135 -0.317302 81.7979 1.84937 79.626L36.8134 44.6674L1.84937 9.7087C-0.317302 7.53683 -0.317302 4.02123 1.84937 1.84937Z" fill="black"/>
+		</svg>		
+	</div>
+</div>
+
+<script>
+	// Blinking cursor logic
+	let blinkCount = 0
+	const cursorElement = document.querySelector('#cursor')
+	const blinkInterval = setInterval(() => {
+		// Check the current display value and toggle it
+		if (cursorElement.style.display === 'none') {
+			cursorElement.style.display = 'block'
+		} else {
+			cursorElement.style.display = 'none'
+		}
+		blinkCount++
+		if (blinkCount === 10) {
+			clearInterval(blinkInterval) // Stop the interval after 10 blinks
+		}
+	}, 500)
+
+	// Logic for show/hide unread articles
+	const buttonAll = document.querySelector('#filter-button--all')
+	const buttonUnread = document.querySelector('#filter-button--unread')
+
+	function onButtonAllHandler() {
+		localStorage.setItem('showAll', 'true')
+		buttonAll.classList.remove('bg-black')
+		buttonAll.classList.add('bg-burgundy')
+		buttonUnread.classList.add('bg-black')
+		buttonUnread.classList.remove('bg-burgundy')
+		document.querySelector('#grid').classList.remove('filter--read')
+	}
+
+	function onButtonUnreadHandler() {
+		localStorage.setItem('showAll', 'false')
+		buttonAll.classList.remove('bg-burgundy')
+		buttonAll.classList.add('bg-black')
+		buttonUnread.classList.add('bg-burgundy')
+		buttonUnread.classList.remove('bg-black')
+		document.querySelector('#grid').classList.add('filter--read')
+	}
+
+	// Named function for the event listener
+	function toggleShowAll(event) {
+		if (!event) {
+			if (localStorage.getItem('showAll') === 'false' || !localStorage.getItem('showAll')) {
+				onButtonUnreadHandler()
+			} else {
+				onButtonAllHandler()
+			}
+		} else {
+			// Get the id of the clicked button
+			const buttonId = event.currentTarget.id;
+
+			// Decide what to do based on the button's ID
+			switch (buttonId) {
+				case 'filter-button--all':
+						onButtonAllHandler()
+						break;
+				case 'filter-button--unread':
+						onButtonUnreadHandler()
+						break;
+				// Add cases for other buttons as necessary
+				default:
+						console.error('Unknown button ID:', buttonId);
+						break;
+				}
+		}
+	}
+
+	// Trigger when content is all loaded
+	document.addEventListener('DOMContentLoaded', () => {
+		toggleShowAll(null)
+
+		// Add event listeners to all buttons with class .filter-button
+		const buttons = document.querySelectorAll('.filter-button');
+		for (let button of buttons) {
+				button.addEventListener('click', toggleShowAll);
+		}
+
+	})
+	// Menu overlay logic
+    const menuButton = document.querySelector('#menu-button');
+    const closeButton = document.querySelector('#close-button');
+    const menuOverlay = document.getElementById('menu-overlay');
+
+    menuButton.addEventListener('click', function() {
+        fadeIn(menuOverlay);
+				document.body.classList.add('no-scroll');
+    });
+
+    menuOverlay.addEventListener('click', function() {
+        fadeOut(menuOverlay);
+				document.body.classList.remove('no-scroll');
+    });
+
+    function fadeIn(element) {
+        element.style.opacity = 1;
+        element.style.visibility = 'visible';
+    }
+
+    function fadeOut(element) {
+        element.style.opacity = 0;
+        setTimeout(function() {
+            element.style.visibility = 'hidden';
+        }, 500); // This should match the transition time (0.5s)
+    }
+
+</script>
 
 <style>
 	a:hover {
 		text-decoration: none;
+	}
+	#menu-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.85);
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.5s;
+		z-index: 9999;
+	}
+	#menu-button {
+		cursor: pointer;
+	}
+	#close-button {
+		z-index: 9999;
 	}
 </style>
