@@ -81,7 +81,7 @@ const { stories } = Astro.props
 		.grid-item {
 			outline: 10px solid transparent;
 		}
-		body:not(.is-dragging)  .grid-item:not(.filter--read):hover,
+		body:not(.is-dragging) .grid-item:not(.filter--read):hover,
 		body:not(.is-dragging) .grid-item[data-lastread='never']:hover {
 			transform: scale(1.05);
 			outline: 0.7rem solid white;
@@ -467,7 +467,7 @@ class InfiniteGrid {
 			})
 		}
 
-		this.grid.style.transform = `translate(${this.offsetX}px,${this.offsetY}px)`
+		this.grid.style.transform = `translate3d(${this.offsetX}px,${this.offsetY}px,0)`
 	}
 
 	shiftIndex(index) {
