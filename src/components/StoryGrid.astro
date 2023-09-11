@@ -69,6 +69,7 @@ const { stories } = Astro.props
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+		pointer-events: none;
 	}
 
 	.full-image {
@@ -254,14 +255,14 @@ class GridItem {
 		this.title.classList.add('grid-item--title')
 		this.title.classList.add('box-decoration-clone')
 		this.title.classList.add('px-2')
-		this.title.classList.add('leading-7')
+		this.title.classList.add('sm:leading-7')
 		this.title.classList.add('text-white')
 		this.title.classList.add('font-normal')
 		this.title.classList.add('bg-black')
 		this.title.classList.add('inline')
 		this.title.classList.add('pt-0')
 		this.title.classList.add('sm:pt-8')
-		this.title.classList.add('pointer-events-none')
+		// this.title.classList.add('pointer-events-none')
 		this.title.classList.add('sm:pointer-events-auto')
 
 		// Add data-bg attribute to the element to load image later
@@ -285,9 +286,6 @@ class GridItem {
 
 		// Store reference to the image in the class
 		this.currentLoadingImage = img
-
-		// This flag helps us determine if the image was loaded synchronously
-		let wasLoadedFromCache = false
 
 		img.onload = () => {
 			if (this.currentLoadingImage === img) {
@@ -340,15 +338,6 @@ class Drag {
 		ele.addEventListener('mouseuot', this.onEnd.bind(this))
 	}
 
-	// onTap(ev) {
-	// 	ev = ev.type == 'touchstart' ? ev.touches[0] : ev
-
-	// 	if (this.dragging) {
-	// 		console.log('is dragging')
-	// 		ev.preventDefault()
-	// 	}
-	// }
-
 	onClick(ev) {
 		ev = ev.type == 'touchstart' ? ev.touches[0] : ev
 
@@ -368,7 +357,6 @@ class Drag {
 
 		this.dragging = true
 
-		// this.dragging = true
 		this.lastX = ev.clientX
 		this.lastY = ev.clientY
 	}
@@ -376,11 +364,8 @@ class Drag {
 	onMove(ev) {
 		if (!this.dragging) return
 
-		// Calculate the duration of the tap
-		const touchDuration = Date.now() - this.touchStartTime
-		// console.log(touchDuration)
-
 		ev = ev.type == 'touchmove' ? ev.touches[0] : ev
+
 		let xDelta = ev.clientX - this.lastX
 		let yDelta = ev.clientY - this.lastY
 		let vel = Math.abs(xDelta * yDelta)
@@ -397,6 +382,7 @@ class Drag {
 				},
 			})
 		}
+
 		this.handleDrag(xDelta, yDelta)
 		this.lastX = ev.clientX
 		this.lastY = ev.clientY
@@ -415,11 +401,13 @@ class Drag {
 		if (touchDuration < 100) {
 			// This checks if the touch lasted less than 500ms
 			// This was a short tap
-			if (event.target.tagName.toLowerCase() === 'a') {
-				const href = event.target.getAttribute('href')
+			if (ev.target.tagName.toLowerCase() === 'a') {
+				const href = ev.target.getAttribute('href')
 				if (href) {
 					window.location = href
 				}
+			} else {
+				return
 			}
 		}
 	}
@@ -431,6 +419,7 @@ class InfiniteGrid {
 		this.Drag = new Drag(this.container, this.onDrag.bind(this))
 		this.offsetX = 0
 		this.offsetY = 0
+
 		// Overshoot items
 		this.items = []
 		this.setGrid(nCol, nRow)
