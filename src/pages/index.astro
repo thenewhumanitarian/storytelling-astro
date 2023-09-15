@@ -14,34 +14,41 @@ function shuffleArray(array) {
 }
 // Todo: Can this be done "once" per session perhaps?
 shuffleArray(stories)
-let isAuth = false
 ---
 
-<script define:vars={{ isAuth }}>
-isAuth = true
-</script>
-
-{
-	isAuth ? (
-		<Layout dark title='The Yemen Listening Project' header={true} footer={false} button='filter'>
-			<StoryGrid stories={stories} />
-		</Layout>
-	) : (
+<>
+	<div id='login' class='hidden'>
 		<Layout dark title='The Yemen Listening Project' header={false} footer={false} button='filter'>
 			<div class='flex h-screen h-screen-ios w-full absolute justify-center items-center text-white flex-col'>
 				<h1 class='text-xl sm:text-4xl'>The Yemen Listening Project</h1>
 				<p class='mt-1 px-2 py-1 bg-white text-black font-bold text-base'>Coming soon...</p>
+				<form>
+					<input
+						autocomplete='no'
+						placeholder='Password'
+						type='password'
+						id='password'
+						class='text-center my-2 px-2 py-1 bg-black border text-white font-bold text-base'
+					/>
+					<button id='login-button' class='hover:text-burgundy font-bold'>Login</button>
+				</form>
+
 				<p class='text-sm'>
 					A project by{' '}
 					<a href='https://www.thenewhumanitarian.org/' class='text-white font-bold underline hover:text-burgundy transition-colors'>
 						{' '}
-						The New Humanitarian
+						 The New Humanitarian
 					</a>
 				</p>
 			</div>
 		</Layout>
-	)
-}
+	</div>
+	<div class='hidden' id='content'>
+		<Layout dark title='The Yemen Listening Project' header={true} footer={false} button='filter'>
+			<StoryGrid stories={stories} />
+		</Layout>
+	</div>
+</>
 
 <style>
 	body {
@@ -51,3 +58,31 @@ isAuth = true
 		z-index: 9999;
 	}
 </style>
+
+<script>
+	// On DOMCONTENTLOADED
+	document.addEventListener('DOMContentLoaded', () => {
+		// Check if the user has visited the site before
+		if (localStorage.getItem('auth') === null) {
+			document.getElementById('login').classList.remove('hidden')
+			return
+		} else {
+			if (localStorage.getItem('auth') === 'wearelistening') {
+				// Add class hidden to #password
+				document.getElementById('content').classList.remove('hidden')
+			}
+		}
+	})
+	document.getElementById('login-button').addEventListener('click', function () {
+		const passwordField = document.querySelector('input#password')
+
+		if (passwordField.value === 'we are listening') {
+			localStorage.setItem('auth', 'wearelistening')
+			// Reload site with url /
+			window.location.href = '/'
+		} else {
+			// Optionally, you can give some feedback to the user if the password is wrong
+			alert('Incorrect password!')
+		}
+	})
+</script>
