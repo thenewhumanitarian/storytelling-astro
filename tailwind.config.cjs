@@ -15,10 +15,11 @@ module.exports = {
 			},
 			fontFamily: {
 				body: ['Roboto Regular', 'Open Sans', 'ui-sans-serif'],
+				bold: ['Roboto Bold', 'Open Sans', 'ui-sans-serif'],
 				title: ['GT Sectra Bold', 'ui-serif'],
 				serif: ['GT Sectra Regular', 'ui-serif'],
 			},
 		},
 	},
-	plugins: [require('@tailwindcss/typography')],
+	plugins: [require('@tailwindcss/typography'), require('@rvxlab/tailwind-plugin-ios-full-height')],
 }

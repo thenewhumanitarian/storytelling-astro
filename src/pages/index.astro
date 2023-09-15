@@ -14,11 +14,34 @@ function shuffleArray(array) {
 }
 // Todo: Can this be done "once" per session perhaps?
 shuffleArray(stories)
+let isAuth = false
 ---
 
-<Layout dark title='The Yemen Listening Project' header={true} footer={false} button='filter'>
-	<StoryGrid stories={stories} />
-</Layout>
+<script define:vars={{ isAuth }}>
+isAuth = true
+</script>
+
+{
+	isAuth ? (
+		<Layout dark title='The Yemen Listening Project' header={true} footer={false} button='filter'>
+			<StoryGrid stories={stories} />
+		</Layout>
+	) : (
+		<Layout dark title='The Yemen Listening Project' header={false} footer={false} button='filter'>
+			<div class='flex h-screen h-screen-ios w-full absolute justify-center items-center text-white flex-col'>
+				<h1 class='text-xl sm:text-4xl'>The Yemen Listening Project</h1>
+				<p class='mt-1 px-2 py-1 bg-white text-black font-bold text-base'>Coming soon...</p>
+				<p class='text-sm'>
+					A project by{' '}
+					<a href='https://www.thenewhumanitarian.org/' class='text-white font-bold underline hover:text-burgundy transition-colors'>
+						{' '}
+						The New Humanitarian
+					</a>
+				</p>
+			</div>
+		</Layout>
+	)
+}
 
 <style>
 	body {

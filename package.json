@@ -12,6 +12,8 @@
   "dependencies": {
     "@astrojs/prefetch": "^0.3.0",
     "@astrojs/tailwind": "^5.0.0",
+    "@astrojs/vercel": "^5.0.0",
+    "@rvxlab/tailwind-plugin-ios-full-height": "^1.1.0",
     "@tailwindcss/typography": "^0.5.9",
     "astro": "^3.0.9",
     "react": "^18.0.0",
