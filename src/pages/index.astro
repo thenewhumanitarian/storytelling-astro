@@ -22,7 +22,7 @@ shuffleArray(stories)
 			<div class='flex h-screen h-screen-ios w-full absolute justify-center items-center text-white flex-col'>
 				<h1 class='text-xl sm:text-4xl'>The Yemen Listening Project</h1>
 				<p class='mt-1 px-2 py-1 bg-white text-black font-bold text-base'>Coming soon...</p>
-				<form>
+				<form class='flex flex-col'>
 					<input
 						autocomplete='no'
 						placeholder='Password'
@@ -73,16 +73,18 @@ shuffleArray(stories)
 			}
 		}
 	})
-	document.getElementById('login-button').addEventListener('click', function () {
+	document.getElementById('login-button').addEventListener('click', function (e) {
+		e.preventDefault()
+
 		const passwordField = document.querySelector('input#password')
 
 		if (passwordField.value === 'we are listening') {
 			localStorage.setItem('auth', 'wearelistening')
-			// Reload site with url /
-			window.location.href = '/'
 		} else {
 			// Optionally, you can give some feedback to the user if the password is wrong
 			alert('Incorrect password!')
 		}
+
+		window.location.href = '/'
 	})
 </script>
