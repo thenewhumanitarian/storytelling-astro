@@ -1,6 +1,13 @@
 ---
+export const prerender = false
+
+if (!Astro.cookies.has('auth')) {
+	return Astro.redirect('/login')
+}
+
 import Layout from '../layouts/Layout.astro'
 import StoryGrid from '../components/StoryGrid.astro'
+
 import stories from '../data/stories.json'
 
 function shuffleArray(array) {
@@ -73,13 +80,25 @@ shuffleArray(stories)
 			}
 		}
 	})
+
+	function setAuthCookie() {
+		const currentTime = new Date().toISOString()
+		const expiry = new Date()
+
+		// Add 7 days to the current time for expiration
+		expiry.setDate(expiry.getDate() + 7)
+
+		document.cookie = `auth=${currentTime}; path=/; expires=${expiry.toUTCString()}`
+	}
+
 	document.getElementById('login-button').addEventListener('click', function (e) {
 		e.preventDefault()
 
-		const passwordField = document.querySelector('input#password')
+		const passwordField: HTMLInputElement = document.querySelector('input#password')
 
 		if (passwordField.value === 'we are listening') {
 			localStorage.setItem('auth', 'wearelistening')
+			setAuthCookie()
 		} else {
 			// Optionally, you can give some feedback to the user if the password is wrong
 			alert('Incorrect password!')
