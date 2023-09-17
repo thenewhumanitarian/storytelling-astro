@@ -67,28 +67,33 @@ shuffleArray(stories)
 </style>
 
 <script>
-	// On DOMCONTENTLOADED
 	document.addEventListener('DOMContentLoaded', () => {
 		// Check if the user has visited the site before
 		if (localStorage.getItem('auth') === null) {
 			document.getElementById('login').classList.remove('hidden')
 			return
 		} else {
-			if (localStorage.getItem('auth') === 'wearelistening') {
-				// Add class hidden to #password
+			const authTimestamp:any = new Date(localStorage.getItem('auth'))
+			const currentTime:any = new Date()
+
+			// Get the difference in milliseconds between the two dates
+			const timeDifference = currentTime - authTimestamp
+
+			// Calculate 7 days in milliseconds for comparison
+			const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000
+
+			if (timeDifference < sevenDaysInMilliseconds) {
 				document.getElementById('content').classList.remove('hidden')
+			} else {
+				document.getElementById('login').classList.remove('hidden')
+				localStorage.removeItem('auth') // Optionally remove the expired auth timestamp
 			}
 		}
 	})
 
-	function setAuthCookie() {
+	function setAuthLocalStorage() {
 		const currentTime = new Date().toISOString()
-		const expiry = new Date()
-
-		// Add 7 days to the current time for expiration
-		expiry.setDate(expiry.getDate() + 7)
-
-		document.cookie = `auth=${currentTime}; path=/; expires=${expiry.toUTCString()}`
+		localStorage.setItem('auth', currentTime)
 	}
 
 	document.getElementById('login-button').addEventListener('click', function (e) {
@@ -97,8 +102,7 @@ shuffleArray(stories)
 		const passwordField: HTMLInputElement = document.querySelector('input#password')
 
 		if (passwordField.value === 'we are listening') {
-			localStorage.setItem('auth', 'wearelistening')
-			setAuthCookie()
+			setAuthLocalStorage()
 		} else {
 			// Optionally, you can give some feedback to the user if the password is wrong
 			alert('Incorrect password!')
