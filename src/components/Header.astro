@@ -174,20 +174,20 @@ const { button, dark } = Astro.props as Props
 
 <script>
 	// Blinking cursor logic
-	let blinkCount = 0
-	const cursorElement = document.querySelector('#cursor')
-	const blinkInterval = setInterval(() => {
-		// Check the current display value and toggle it
-		if (cursorElement.style.display === 'none') {
-			cursorElement.style.display = 'block'
-		} else {
-			cursorElement.style.display = 'none'
-		}
-		blinkCount++
-		if (blinkCount === 10) {
-			clearInterval(blinkInterval) // Stop the interval after 10 blinks
-		}
-	}, 500)
+	// let blinkCount = 0
+	// const cursorElement = document.querySelector('#cursor')
+	// const blinkInterval = setInterval(() => {
+	// 	// Check the current display value and toggle it
+	// 	if (cursorElement.style.display === 'none') {
+	// 		cursorElement.style.display = 'block'
+	// 	} else {
+	// 		cursorElement.style.display = 'none'
+	// 	}
+	// 	blinkCount++
+	// 	if (blinkCount === 10) {
+	// 		clearInterval(blinkInterval) // Stop the interval after 10 blinks
+	// 	}
+	// }, 500)
 
 	// Logic for show/hide unread articles
 	const buttonAll = document.querySelector('#filter-button--all')
