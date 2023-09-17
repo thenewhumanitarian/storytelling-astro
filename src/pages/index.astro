@@ -1,9 +1,9 @@
 ---
-export const prerender = true
+// export const prerender = true
 
-if (!Astro.cookies.has('auth')) {
-	return Astro.redirect('/login')
-}
+// if (!Astro.cookies.has('auth')) {
+// 	return Astro.redirect('/login')
+// }
 
 import Layout from '../layouts/Layout.astro'
 import StoryGrid from '../components/StoryGrid.astro'
