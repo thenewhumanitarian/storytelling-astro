@@ -11,7 +11,7 @@ const { button, dark } = Astro.props as Props
 	<div class='grid grid-cols-3 items-center px-6 w-full'>
 		<div class='flex justify-start gap-x-2 sm:gap-x-8 items-center'>
 			<div class={`${dark ? 'text-white' : 'text-black'} fill-current flex gap-3 items-center justify-start`}>
-				<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' class='fill-current text-white' id="menu-button">
+				<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' class='fill-current text-white' id='menu-button'>
 					<path d='M0 2v2h24V2Zm0 9v2h24v-2Zm0 9v2h24v-2Z'></path>
 				</svg>
 				{
@@ -19,30 +19,61 @@ const { button, dark } = Astro.props as Props
 						<div class='fixed top-24 left-5 sm:top-0 sm:left-0 shadow-lg sm:shadow-none sm:relative flex items-center gap-3 z-50'>
 							<div class='gap-2 ml-4 hidden sm:flex'>
 								<svg width='14px' viewBox='0 0 117 118' xmlns='http://www.w3.org/2000/svg'>
-									<path
-										d='M4.50008 0.333252C1.37501 0.333252 -0.708187 3.87485 0.95848 6.58325L46.1665 66.9993V112.833C46.1665 115.958 49.4998 118.041 52.2081 116.583L68.8747 108.249C70.3331 107.624 71.1665 106.166 71.1665 104.499V66.9993L116.374 6.58325C118.041 3.87499 115.958 0.333252 112.833 0.333252H4.50008Z'
-									/>
+									<path d='M4.50008 0.333252C1.37501 0.333252 -0.708187 3.87485 0.95848 6.58325L46.1665 66.9993V112.833C46.1665 115.958 49.4998 118.041 52.2081 116.583L68.8747 108.249C70.3331 107.624 71.1665 106.166 71.1665 104.499V66.9993L116.374 6.58325C118.041 3.87499 115.958 0.333252 112.833 0.333252H4.50008Z' />
 								</svg>
-								<!-- <span>Filter:</span> -->
 							</div>
-							<span class='isolate inline-flex rounded-xs shadow-sm'>
+							<div class='isolate inline-flex rounded-xs shadow-sm'>
 								<button
 									type='button'
 									class='transition-colors duration-150 filter-button relative inline-flex items-center rounded-l-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
-									id="filter-button--all"
+									id='filter-button--all'
 								>
 									All
 								</button>
 								<button
 									type='button'
 									class='transition-colors duration-150 filter-button relative -ml-px inline-flex items-center rounded-r-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
-									id="filter-button--unread"
+									id='filter-button--unread'
 								>
 									Unread
 								</button>
-							</span>
+							</div>
 						</div>
-					)}
+					)
+				}
+				<div class='fixed top-24 left-5 sm:top-0 sm:left-0 shadow-lg sm:shadow-none sm:relative flex items-center gap-3 z-50'>
+					<div class='gap-2 ml-4 hidden sm:flex'>
+						<svg width='18px' viewBox='0 0 105 105' fill='none' xmlns='http://www.w3.org/2000/svg'>
+							<g clip-path='url(#clip0_222_26)'>
+								<path
+									d='M89.2986 15.282C79.4108 5.39895 66.2719 -0.0454712 52.2903 -0.0454712C38.3088 -0.0454712 25.1694 5.39883 15.282 15.282C-5.12523 35.6856 -5.12523 68.8914 15.282 89.2999C25.1698 99.183 38.3088 104.627 52.2903 104.627C66.2719 104.627 79.4113 99.1831 89.2986 89.2999C109.706 68.8927 109.706 35.6905 89.2986 15.282ZM91.0224 74.5522H76.9011C78.4429 68.5285 79.367 61.8099 79.5346 54.6659H96.8822C96.5135 61.5659 94.5609 68.3889 91.0224 74.5522ZM58.7162 96.5064C57.3563 96.7027 55.9773 96.8368 54.5887 96.9086V79.1491H70.5965C67.6804 87.2892 63.5045 93.5093 58.7162 96.5064ZM33.9844 79.149H49.9922V96.9085C48.6036 96.8366 47.2246 96.7026 45.8646 96.5062C41.0764 93.5088 36.9004 87.289 33.9844 79.149ZM7.70186 54.6659H25.0495C25.2171 61.8101 26.1412 68.5286 27.683 74.5522H13.5617C10.0184 68.3897 8.06568 61.566 7.70186 54.6659ZM14.6257 28.2731H28.1574C26.3187 34.7804 25.2222 42.1639 25.0449 50.0692H7.69242C8.06591 42.4558 10.3833 34.9243 14.6257 28.2731ZM45.8642 8.0755C47.2241 7.87917 48.6031 7.7451 49.9917 7.67327V23.6762H34.6446C37.5176 16.3979 41.4254 10.8532 45.8642 8.0755ZM69.9353 23.6763H54.5882V7.67834C55.9768 7.75016 57.3558 7.88423 58.7158 8.08055C63.1545 10.853 67.0624 16.3977 69.9353 23.6763ZM71.5394 28.2731C73.517 34.7229 74.738 42.1689 74.9343 50.0692H54.5883V28.2731H71.5394ZM49.9922 28.2731V50.0692H29.6462C29.8426 42.1685 31.0635 34.7221 33.0411 28.2731H49.9922ZM29.6462 54.6659H49.9922V74.5522H32.5293C30.863 68.5621 29.8331 61.8014 29.6462 54.6659ZM54.589 74.5522V54.6659H74.9349C74.7481 61.8005 73.7187 68.5617 72.0523 74.5522H54.589ZM79.5317 50.0692C79.3593 42.1637 78.2579 34.7797 76.4192 28.2731H89.9509C94.1933 34.9241 96.5109 42.4557 96.8843 50.0692H79.5317ZM86.5896 23.6763H74.954C73.0771 18.4667 70.6876 13.98 67.9152 10.4229C73.8383 12.6303 79.2778 16.0971 83.8789 20.6986C84.8413 21.6611 85.7373 22.6565 86.5896 23.6763ZM36.6662 10.4229C33.8938 13.9806 31.5044 18.4673 29.6274 23.6763H17.9918C18.8441 22.6564 19.7395 21.6605 20.6971 20.7028C25.3035 16.0964 30.7435 12.6303 36.6662 10.4229ZM16.5985 79.149H29.0294C30.9879 85.1057 33.5879 90.2099 36.6716 94.1602C30.7485 91.9528 25.309 88.4861 20.7079 83.8845C19.1996 82.3809 17.8388 80.7962 16.5985 79.149ZM67.9145 94.1602C70.9933 90.2098 73.5981 85.1055 75.5566 79.149H87.9875C86.7474 80.7962 85.3827 82.3858 83.8839 83.8846C79.2776 88.4862 73.8372 91.9528 67.9145 94.1602Z'
+									fill='white'></path>
+							</g>
+							<defs>
+								<clipPath id='clip0_222_26'>
+									<rect width='105' height='105' fill='white'></rect>
+								</clipPath>
+							</defs>
+						</svg>
+					</div>
+					<div class='isolate inline-flex rounded-xs shadow-sm'>
+						<button
+							type='button'
+							class='transition-colors duration-150 filter-button relative inline-flex items-center rounded-l-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
+							id='change-language--ar'
+							dir='rtl'
+						>
+							ععر
+						</button>
+						<button
+							type='button'
+							class='transition-colors duration-150 filter-button relative -ml-px inline-flex items-center rounded-r-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
+							id='change-language--en'
+						>
+							EN
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class='flex justify-center'>
@@ -146,36 +177,40 @@ const { button, dark } = Astro.props as Props
 			</svg>
 			 Share
 		</div>
-
 	</div>
 </header>
 
-<div id="menu-overlay" class="flex top-0 left-0 w-full h-screen bg-black items-center justify-center z-40">
-	<div class="flex flex-row gap-x-5">
-		<nav class="space-y-4 flex flex-col text-right">
-			<a href="/about" class="text-white text-lg sm:text-4xl hover:text-burgundy transition-colors">حول هذا المشروع</a>
-			<a href="/feedback" class="text-white text-lg sm:text-4xl hover:text-burgundy transition-colors">أخبرنا عن انطباعك</a>
-			<a href="/share" class="text-white text-lg sm:text-4xl hover:text-burgundy transition-colors">رابط آخر</a>
+<div id='menu-overlay' class='flex top-0 left-0 w-full h-screen bg-black items-center justify-center z-40'>
+	<div class='flex flex-row gap-x-5'>
+		<nav class='space-y-4 flex flex-col text-right'>
+			<a href='/about' class='text-white text-lg sm:text-4xl hover:text-burgundy transition-colors'>حول هذا المشروع</a>
+			<a href='/feedback' class='text-white text-lg sm:text-4xl hover:text-burgundy transition-colors'>أخبرنا عن انطباعك</a>
+			<a href='/share' class='text-white text-lg sm:text-4xl hover:text-burgundy transition-colors'>رابط آخر</a>
 			<!-- Add more links as needed -->
 		</nav>
-		<nav class="space-y-4 flex flex-col text-left">
-			<a href="/about" class="text-white text-lg sm:text-4xl hover:text-burgundy transition-colors">About this project</a>
-			<a href="/feedback" class="text-white text-lg sm:text-4xl hover:text-burgundy transition-colors">Give us feedback</a>
-			<a href="/share" class="text-white text-lg sm:text-4xl hover:text-burgundy transition-colors">Another link</a>
+		<nav class='space-y-4 flex flex-col text-left'>
+			<a href='/about' class='text-white text-lg sm:text-4xl hover:text-burgundy transition-colors'>About this project</a>
+			<a href='/feedback' class='text-white text-lg sm:text-4xl hover:text-burgundy transition-colors'>Give us feedback</a>
+			<a href='/share' class='text-white text-lg sm:text-4xl hover:text-burgundy transition-colors'>Another link</a>
 			<!-- Add more links as needed -->
 		</nav>
 	</div>
-	<div class="text-white absolute top-24 right-10 w-10 h-10 cursor-pointer hover:text-burgundy transition-colors" id="close-button">
-		<svg class="fill-current" width="100%" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<path class="fill-current" fill-rule="evenodd" clip-rule="evenodd" d="M1.84937 1.84937C4.02123 -0.317302 7.53683 -0.317302 9.7087 1.84937L44.6674 36.8134L79.626 1.84937C81.7979 -0.317302 85.3135 -0.317302 87.4854 1.84937C89.652 4.02123 89.652 7.53683 87.4854 9.7087L52.5214 44.6674L87.4854 79.626C89.652 81.7979 89.652 85.3135 87.4854 87.4854C85.3135 89.652 81.7979 89.652 79.626 87.4854L44.6674 52.5214L9.7087 87.4854C7.53683 89.652 4.02123 89.652 1.84937 87.4854C-0.317302 85.3135 -0.317302 81.7979 1.84937 79.626L36.8134 44.6674L1.84937 9.7087C-0.317302 7.53683 -0.317302 4.02123 1.84937 1.84937Z" fill="black"/>
-		</svg>		
+	<div class='text-white absolute top-24 right-10 w-10 h-10 cursor-pointer hover:text-burgundy transition-colors' id='close-button'>
+		<svg class='fill-current' width='100%' height='90' viewBox='0 0 90 90' fill='none' xmlns='http://www.w3.org/2000/svg'>
+			<path
+				class='fill-current'
+				fill-rule='evenodd'
+				clip-rule='evenodd'
+				d='M1.84937 1.84937C4.02123 -0.317302 7.53683 -0.317302 9.7087 1.84937L44.6674 36.8134L79.626 1.84937C81.7979 -0.317302 85.3135 -0.317302 87.4854 1.84937C89.652 4.02123 89.652 7.53683 87.4854 9.7087L52.5214 44.6674L87.4854 79.626C89.652 81.7979 89.652 85.3135 87.4854 87.4854C85.3135 89.652 81.7979 89.652 79.626 87.4854L44.6674 52.5214L9.7087 87.4854C7.53683 89.652 4.02123 89.652 1.84937 87.4854C-0.317302 85.3135 -0.317302 81.7979 1.84937 79.626L36.8134 44.6674L1.84937 9.7087C-0.317302 7.53683 -0.317302 4.02123 1.84937 1.84937Z'
+				fill='black'></path>
+		</svg>
 	</div>
 </div>
 
 <script>
 	// Blinking cursor logic
 	let blinkCount = 0
-	const cursorElement:HTMLDivElement = document.querySelector('#cursor')
+	const cursorElement: HTMLDivElement = document.querySelector('#cursor')
 	const blinkInterval = setInterval(() => {
 		// Check the current display value and toggle it
 		if (cursorElement.style.display === 'none') {
@@ -233,21 +268,21 @@ const { button, dark } = Astro.props as Props
 			}
 		} else {
 			// Get the id of the clicked button
-			const buttonId = event.currentTarget.id;
+			const buttonId = event.currentTarget.id
 
 			// Decide what to do based on the button's ID
 			switch (buttonId) {
 				case 'filter-button--all':
-						onButtonAllHandler()
-						break;
+					onButtonAllHandler()
+					break
 				case 'filter-button--unread':
-						onButtonUnreadHandler()
-						break;
+					onButtonUnreadHandler()
+					break
 				// Add cases for other buttons as necessary
 				default:
-						console.error('Unknown button ID:', buttonId);
-						break;
-				}
+					console.error('Unknown button ID:', buttonId)
+					break
+			}
 		}
 	}
 
@@ -256,39 +291,37 @@ const { button, dark } = Astro.props as Props
 		toggleShowAll(null)
 
 		// Add event listeners to all buttons with class .filter-button
-		const buttons = document.querySelectorAll('.filter-button');
+		const buttons = document.querySelectorAll('.filter-button')
 		for (let button of buttons) {
-				button.addEventListener('click', toggleShowAll);
+			button.addEventListener('click', toggleShowAll)
 		}
-
 	})
 	// Menu overlay logic
-    const menuButton = document.querySelector('#menu-button');
-    // const closeButton = document.querySelector('#close-button');
-    const menuOverlay = document.getElementById('menu-overlay');
+	const menuButton = document.querySelector('#menu-button')
+	// const closeButton = document.querySelector('#close-button');
+	const menuOverlay = document.getElementById('menu-overlay')
 
-    menuButton.addEventListener('click', function() {
-        fadeIn(menuOverlay);
-				document.body.classList.add('no-scroll');
-    });
+	menuButton.addEventListener('click', function () {
+		fadeIn(menuOverlay)
+		document.body.classList.add('no-scroll')
+	})
 
-    menuOverlay.addEventListener('click', function() {
-        fadeOut(menuOverlay);
-				document.body.classList.remove('no-scroll');
-    });
+	menuOverlay.addEventListener('click', function () {
+		fadeOut(menuOverlay)
+		document.body.classList.remove('no-scroll')
+	})
 
-    function fadeIn(element) {
-        element.style.opacity = 1;
-        element.style.visibility = 'visible';
-    }
+	function fadeIn(element) {
+		element.style.opacity = 1
+		element.style.visibility = 'visible'
+	}
 
-    function fadeOut(element) {
-        element.style.opacity = 0;
-        setTimeout(function() {
-            element.style.visibility = 'hidden';
-        }, 500); // This should match the transition time (0.5s)
-    }
-
+	function fadeOut(element) {
+		element.style.opacity = 0
+		setTimeout(function () {
+			element.style.visibility = 'hidden'
+		}, 500) // This should match the transition time (0.5s)
+	}
 </script>
 
 <style>

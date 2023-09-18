@@ -1,4 +1,6 @@
 ---
+import { ViewTransitions } from 'astro:transitions'
+
 // export const prerender = true
 
 // if (!Astro.cookies.has('auth')) {
@@ -24,6 +26,8 @@ shuffleArray(stories)
 ---
 
 <>
+	<ViewTransitions />
+
 	<div id='login' class='hidden'>
 		<Layout dark title='The Yemen Listening Project' header={false} footer={false} button='filter'>
 			<div class='flex h-screen h-screen-ios w-full absolute justify-center items-center text-white flex-col'>
@@ -50,9 +54,9 @@ shuffleArray(stories)
 			</div>
 		</Layout>
 	</div>
-	<div class='hidden' id='content'>
+	<div class='hidden' id='content' transition:persist>
 		<Layout dark title='The Yemen Listening Project' header={true} footer={false} button='filter'>
-			<StoryGrid stories={stories} />
+			<StoryGrid stories={stories} transition:persist />
 		</Layout>
 	</div>
 </>

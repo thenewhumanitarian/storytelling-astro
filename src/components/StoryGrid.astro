@@ -157,6 +157,13 @@ function filterGridBasedOnLocalStorage() {
 	}
 }
 
+function truncateWithEllipses(text, maxLength) {
+	if (text.length <= maxLength) {
+		return text
+	}
+	return text.substr(0, maxLength - 3) + '...' // Subtract 3 for the length of the ellipses
+}
+
 filterGridBasedOnLocalStorage()
 
 // Window load event
@@ -215,7 +222,11 @@ class GridItem {
 	setNewCard() {
 		// Define vars to be used later
 		let story = stories[this.index % stories.length]
-		let title = stories[this.index % stories.length].title
+		let title = stories[this.index % stories.length].titles['ar']
+
+		if (title.length > 50) {
+			title = truncateWithEllipses(title, 50)
+		}
 
 		// Determine the new image URL
 		let newImageUrl = `/downloaded_images/thumbnails/${story.image.fileName}`
@@ -261,7 +272,7 @@ class GridItem {
 		// Set title for the grid item
 		// this.title.innerHTML = this.escapeHtml(title)
 		this.title.textContent = title
-		console.log(title)
+		// console.log(title)
 
 		// Set title classes and add text
 		this.title.classList.add('grid-item--title')
@@ -280,6 +291,8 @@ class GridItem {
 
 		// Add data-bg attribute to the element to load image later
 		this.item.setAttribute('data-bg', `/downloaded_images/thumbnails/${story.image.fileName}`)
+		// Add attribute transition:name="media-player"
+		this.item.setAttribute('transition:name', story.slug)
 
 		// Lazy load the image to replace the blurry placeholder
 		if (!this.isImageLoaded()) {
