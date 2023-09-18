@@ -250,7 +250,7 @@ const { button, dark } = Astro.props as Props
 	const buttonEnglish = document.querySelector('#change-language--en')
 
 	function initializeLanguageButton() {
-		const currentLanguage = localStorage.getItem('lang') || 'en'
+		const currentLanguage = localStorage.getItem('lang')
 
 		if (currentLanguage === 'ar' && buttonArabic) {
 			buttonArabic.classList.add('bg-burgundy')
@@ -343,6 +343,14 @@ const { button, dark } = Astro.props as Props
 	document.addEventListener('DOMContentLoaded', () => {
 		toggleShowAll(null)
 		initializeLanguageButton()
+
+		// Add right class to #grid based on language in localStorage
+		const currentLanguage = localStorage.getItem('lang')
+		if (currentLanguage === 'ar') {
+			document.querySelector('#grid').classList.add('language--ar')
+		} else {
+			document.querySelector('#grid').classList.add('language--en')
+		}
 
 		// Add event listeners to all buttons with class .filter-button
 		const buttons = document.querySelectorAll('.filter-button')

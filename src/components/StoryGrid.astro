@@ -9,162 +9,7 @@ const { stories } = Astro.props
 <!-- Library to help moving around the grid -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js' is:inline></script>
 
-<style is:global>
-	body.is-dragging .grid-item h2,
-	body.is-dragging .grid-item {
-		cursor: move;
-	}
-
-	header {
-		position: fixed;
-		z-index: 9999 !important;
-	}
-
-	.stories-container {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100vh;
-		z-index: 5555;
-		overflow: hidden;
-	}
-
-	.stories-container span {
-		position: fixed;
-		z-index: 5000;
-		top: 0;
-		left: 0;
-		width: 50px;
-		height: 50px;
-		background: white;
-	}
-
-	.grid {
-		display: grid;
-		width: 100%;
-		height: 100%;
-		gap: 0;
-		overflow: hidden;
-	}
-
-	.grid-item {
-		position: relative;
-		background: black;
-		background-size: cover;
-		image-rendering: pixelated;
-		background-position: center center;
-		user-select: none;
-		overflow: hidden;
-		will-change: all;
-		transition: transform 0.25s ease-in-out;
-		transform: scale(1);
-	}
-
-	.grid-item img {
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: -1;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		pointer-events: none;
-	}
-
-	.full-image {
-		opacity: 0;
-		transition: opacity 0.5s ease;
-	}
-
-	.full-image.loaded {
-		opacity: 1;
-	}
-
-	.filter--read .grid-item:not([data-lastread='never']) {
-		opacity: 0.2;
-		/* transition: opacity 1s ease-out; */
-	}
-
-	.filter--read .grid-item:not([data-lastread='never']),
-	.filter--read .grid-item:not([data-lastread='never']) * {
-		pointer-events: none;
-	}
-
-	.filter--read .grid-item:not([data-lastread='never']):hover,
-	.filter--read .grid-item:not([data-lastread='never']):hover * {
-		cursor: move;
-	}
-
-	.grid-item--title {
-		margin: 0;
-		box-decoration-break: clone;
-		font-size: 1.4rem;
-		line-height: 1.15;
-		padding: 0 0.4rem;
-		cursor: pointer;
-	}
-
-	// Set text to be either right or left aligned for EN and AR
-	#grid.language--en .grid-item {
-		text-align: left;
-	}
-
-	#grid.language--ar .grid-item {
-		text-align: right;
-	}
-
-	// Hide and show different language titles based on parent #grid class
-	#grid.language--ar .grid-item .grid-item--title.lang--en {
-		display: none;
-	}
-
-	#grid.language--ar .grid-item .grid-item--title.lang--en {
-		display: none;
-	}
-
-	@media screen and (min-width: 800px) {
-		.grid-item {
-			outline: 10px solid transparent;
-		}
-
-		body:not(.is-dragging) .grid-item:not(.filter--read):hover,
-		body:not(.is-dragging) .grid-item[data-lastread='never']:hover {
-			transform: scale(1.05);
-			outline: 0.7rem solid white;
-			z-index: 9999;
-		}
-
-		body:not(.is-dragging) .filter--read .grid-item[data-lastread='never']:hover .grid-item--title {
-			color: black;
-			background: white;
-		}
-	}
-
-	.grid-item--link {
-		display: none;
-		position: absolute;
-		background: white;
-		color: black;
-		padding: 0.25rem 0.5rem;
-		bottom: 0;
-		right: 0;
-		z-index: 9999;
-	}
-
-	.grid-item:hover .grid-item--link {
-		display: block;
-	}
-
-	@media screen and (max-width: 500px) {
-		.grid-item--title {
-			font-size: 1rem;
-			height: auto;
-		}
-	}
-</style>
-
-<script async define:vars={{ stories }}>
+<script async define:vars={{ stories }} is:inline>
 // Initial check to filter grid if necessary
 function filterGridBasedOnLocalStorage() {
 	if (localStorage.getItem('showAll') === 'false') {
@@ -300,11 +145,11 @@ class GridItem {
 		this.titleEnglish.classList.add('text-white')
 		this.titleEnglish.classList.add('font-normal')
 		this.titleEnglish.classList.add('bg-black')
-		this.titleEnglish.classList.add('inline')
 		this.titleEnglish.classList.add('pt-0')
 		this.titleEnglish.classList.add('sm:pt-8')
 		this.titleEnglish.classList.add('sm:pointer-events-auto')
 		this.titleEnglish.setAttribute('dir', 'ltr')
+		// this.titleEnglish.classList.add('inline')
 
 		// Set Arabic title for the grid item
 		this.titleArabic.textContent = truncateWithEllipses(titles['ar'], 100)
@@ -318,11 +163,11 @@ class GridItem {
 		this.titleArabic.classList.add('text-white')
 		this.titleArabic.classList.add('font-normal')
 		this.titleArabic.classList.add('bg-black')
-		this.titleArabic.classList.add('inline')
 		this.titleArabic.classList.add('pt-0')
 		this.titleArabic.classList.add('sm:pt-8')
 		this.titleArabic.classList.add('sm:pointer-events-auto')
 		this.titleArabic.setAttribute('dir', 'rtl')
+		// this.titleArabic.classList.add('inline')
 
 		// Add data-bg attribute to the element to load image later
 		this.item.setAttribute('data-bg', `/downloaded_images/thumbnails/${story.image.fileName}`)
@@ -609,3 +454,161 @@ function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 130) {
 	}
 }
 </script>
+
+<style is:global>
+	body.is-dragging .grid-item h2,
+	body.is-dragging .grid-item {
+		cursor: move;
+	}
+
+	header {
+		position: fixed;
+		z-index: 9999 !important;
+	}
+
+	.stories-container {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100vh;
+		z-index: 5555;
+		overflow: hidden;
+	}
+
+	.stories-container span {
+		position: fixed;
+		z-index: 5000;
+		top: 0;
+		left: 0;
+		width: 50px;
+		height: 50px;
+		background: white;
+	}
+
+	.grid {
+		display: grid;
+		width: 100%;
+		height: 100%;
+		gap: 0;
+		overflow: hidden;
+	}
+
+	.grid-item {
+		position: relative;
+		background: black;
+		background-size: cover;
+		image-rendering: pixelated;
+		background-position: center center;
+		user-select: none;
+		overflow: hidden;
+		will-change: all;
+		transition: transform 0.25s ease-in-out;
+		transform: scale(1);
+	}
+
+	.grid-item img {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: -1;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		pointer-events: none;
+	}
+
+	.full-image {
+		opacity: 0;
+		transition: opacity 0.5s ease;
+	}
+
+	.full-image.loaded {
+		opacity: 1;
+	}
+
+	.filter--read .grid-item:not([data-lastread='never']) {
+		opacity: 0.2;
+		/* transition: opacity 1s ease-out; */
+	}
+
+	.filter--read .grid-item:not([data-lastread='never']),
+	.filter--read .grid-item:not([data-lastread='never']) * {
+		pointer-events: none;
+	}
+
+	.filter--read .grid-item:not([data-lastread='never']):hover,
+	.filter--read .grid-item:not([data-lastread='never']):hover * {
+		cursor: move;
+	}
+
+	.grid-item--title {
+		margin: 0;
+		box-decoration-break: clone;
+		font-size: 1.4rem;
+		line-height: 1.15;
+		padding: 0 0.4rem;
+		cursor: pointer;
+	}
+
+	.language--ar .grid-item--title.lang--en {
+		display: none;
+	}
+
+	.language--en .grid-item--title.lang--ar {
+		display: none;
+	}
+
+	// Set text to be either right or left aligned for EN and AR
+	/* #grid.language--en .grid-item {
+		text-align: left;
+	}
+
+	#grid.language--ar .grid-item {
+		text-align: right;
+	} */
+
+	.grid-item--title {
+		color: red;
+	}
+
+	@media screen and (min-width: 800px) {
+		.grid-item {
+			outline: 10px solid transparent;
+		}
+
+		body:not(.is-dragging) .grid-item:not(.filter--read):hover,
+		body:not(.is-dragging) .grid-item[data-lastread='never']:hover {
+			transform: scale(1.05);
+			outline: 0.7rem solid white;
+			z-index: 9999;
+		}
+
+		body:not(.is-dragging) .filter--read .grid-item[data-lastread='never']:hover .grid-item--title {
+			color: black;
+			background: white;
+		}
+	}
+
+	.grid-item--link {
+		display: none;
+		position: absolute;
+		background: white;
+		color: black;
+		padding: 0.25rem 0.5rem;
+		bottom: 0;
+		right: 0;
+		z-index: 9999;
+	}
+
+	.grid-item:hover .grid-item--link {
+		display: block;
+	}
+
+	@media screen and (max-width: 500px) {
+		.grid-item--title {
+			font-size: 1rem;
+			height: auto;
+		}
+	}
+</style>
