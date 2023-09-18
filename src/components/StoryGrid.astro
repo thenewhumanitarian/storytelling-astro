@@ -106,20 +106,20 @@ const { stories } = Astro.props
 	}
 
 	// Set text to be either right or left aligned for EN and AR
-	#grid.lang--en .grid-item {
+	#grid.language--en .grid-item {
 		text-align: left;
 	}
 
-	#grid.lang--ar .grid-item {
+	#grid.language--ar .grid-item {
 		text-align: right;
 	}
 
 	// Hide and show different language titles based on parent #grid class
-#grid.lang--ar .grid-item .lang--en {
+	#grid.language--ar .grid-item .grid-item--title.lang--en {
 		display: none;
 	}
 
-	#grid.lang--ar .grid-item .lang--en {
+	#grid.language--ar .grid-item .grid-item--title.lang--en {
 		display: none;
 	}
 
