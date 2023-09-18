@@ -195,20 +195,32 @@ const { button, dark } = Astro.props as Props
 
 	function onButtonAllHandler() {
 		localStorage.setItem('showAll', 'true')
-		buttonAll.classList.remove('bg-black')
-		buttonAll.classList.add('bg-burgundy')
-		buttonUnread.classList.add('bg-black')
-		buttonUnread.classList.remove('bg-burgundy')
-		document.querySelector('#grid').classList.remove('filter--read')
+		if (buttonAll) {
+			buttonAll.classList.remove('bg-black')
+			buttonAll.classList.add('bg-burgundy')
+		}
+		if (buttonUnread) {
+			buttonUnread.classList.add('bg-black')
+			buttonUnread.classList.remove('bg-burgundy')
+		}
+		if (document.querySelector('#grid')) {
+			document.querySelector('#grid').classList.remove('filter--read')
+		}
 	}
 
 	function onButtonUnreadHandler() {
 		localStorage.setItem('showAll', 'false')
-		buttonAll.classList.remove('bg-burgundy')
-		buttonAll.classList.add('bg-black')
-		buttonUnread.classList.add('bg-burgundy')
-		buttonUnread.classList.remove('bg-black')
-		document.querySelector('#grid').classList.add('filter--read')
+		if (buttonAll) {
+			buttonAll.classList.remove('bg-burgundy')
+			buttonAll.classList.add('bg-black')
+		}
+		if (buttonUnread) {
+			buttonUnread.classList.add('bg-burgundy')
+			buttonUnread.classList.remove('bg-black')
+		}
+		if (document.querySelector('#grid')) {
+			document.querySelector('#grid').classList.add('filter--read')
+		}
 	}
 
 	// Named function for the event listener
@@ -252,7 +264,7 @@ const { button, dark } = Astro.props as Props
 	})
 	// Menu overlay logic
     const menuButton = document.querySelector('#menu-button');
-    const closeButton = document.querySelector('#close-button');
+    // const closeButton = document.querySelector('#close-button');
     const menuOverlay = document.getElementById('menu-overlay');
 
     menuButton.addEventListener('click', function() {
