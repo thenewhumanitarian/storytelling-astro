@@ -96,6 +96,16 @@ const { stories } = Astro.props
 		cursor: move;
 	}
 
+	// Hide and show different language titles based on parent #grid class
+	.grid.language--en .language--ar {
+		display: none;
+		color: red;
+	}
+
+	.grid.language--ar .language--en {
+		display: none;
+	}
+
 	@media screen and (min-width: 800px) {
 		.grid-item {
 			outline: 10px solid transparent;
@@ -121,7 +131,10 @@ const { stories } = Astro.props
 		line-height: 1.15;
 		padding: 0 0.4rem;
 		cursor: pointer;
-		/* vertical-align: top; */
+	}
+
+	.grid-item--title.language--ar {
+		text-align: right;
 	}
 
 	.grid-item--link {
@@ -200,9 +213,11 @@ class GridItem {
 		// Variable to check if currently loading image
 		this.currentLoadingImage = null
 
-		// Create h2 element for title
-		this.title = document.createElement('h2')
-		this.item.append(this.title)
+		// Create h2 elements for both titles
+		this.titleEnglish = document.createElement('h2')
+		this.item.append(this.titleEnglish)
+		this.titleArabic = document.createElement('h2')
+		this.item.append(this.titleArabic)
 
 		// Set index and add classes
 		this.index = index
@@ -222,7 +237,10 @@ class GridItem {
 	setNewCard() {
 		// Define vars to be used later
 		let story = stories[this.index % stories.length]
-		let title = stories[this.index % stories.length].titles['ar']
+		let title = story.titles['ar']
+
+		// Add both language titles
+		const titles = story.titles
 
 		if (title.length > 50) {
 			title = truncateWithEllipses(title, 75)
@@ -269,30 +287,42 @@ class GridItem {
 			this.item.setAttribute('data-lastread', 'never')
 		}
 
-		// Set title for the grid item
-		// this.title.innerHTML = this.escapeHtml(title)
-		this.title.textContent = title
-		// console.log(title)
+		// Set English title for the grid item
+		this.titleEnglish.textContent = truncateWithEllipses(titles['en'], 100)
 
-		// Set title classes and add text
-		this.title.classList.add('grid-item--title')
-		this.title.classList.add('box-decoration-clone')
-		this.title.classList.add('px-2')
-		this.title.classList.add('sm:leading-7')
-		this.title.classList.add('text-white')
-		this.title.classList.add('font-normal')
-		this.title.classList.add('bg-black')
-		this.title.classList.add('inline')
-		this.title.classList.add('pt-0')
-		this.title.classList.add('sm:pt-8')
-		this.title.classList.add('sm:pointer-events-auto')
-		// this.title.classList.add('transition-opacity')
-		// this.title.classList.add('pointer-events-none')
+		// Set title classes and add text for English title
+		this.titleEnglish.classList.add('grid-item--title')
+		this.titleEnglish.classList.add('box-decoration-clone')
+		this.titleEnglish.classList.add('px-2')
+		this.titleEnglish.classList.add('sm:leading-7')
+		this.titleEnglish.classList.add('text-white')
+		this.titleEnglish.classList.add('font-normal')
+		this.titleEnglish.classList.add('bg-black')
+		this.titleEnglish.classList.add('inline')
+		this.titleEnglish.classList.add('pt-0')
+		this.titleEnglish.classList.add('sm:pt-8')
+		this.titleEnglish.classList.add('sm:pointer-events-auto')
+		this.titleEnglish.classList.add('language--en')
+
+		// Set Arabic title for the grid item
+		this.titleArabic.textContent = truncateWithEllipses(titles['ar'], 100)
+
+		// Set title classes and add text for Arabic title
+		this.titleArabic.classList.add('grid-item--title')
+		this.titleArabic.classList.add('box-decoration-clone')
+		this.titleArabic.classList.add('px-2')
+		this.titleArabic.classList.add('sm:leading-7')
+		this.titleArabic.classList.add('text-white')
+		this.titleArabic.classList.add('font-normal')
+		this.titleArabic.classList.add('bg-black')
+		this.titleArabic.classList.add('inline')
+		this.titleArabic.classList.add('pt-0')
+		this.titleArabic.classList.add('sm:pt-8')
+		this.titleArabic.classList.add('sm:pointer-events-auto')
+		this.titleArabic.classList.add('language--ar')
 
 		// Add data-bg attribute to the element to load image later
 		this.item.setAttribute('data-bg', `/downloaded_images/thumbnails/${story.image.fileName}`)
-		// Add attribute transition:name="media-player"
-		this.item.setAttribute('transition:name', story.slug)
 
 		// Lazy load the image to replace the blurry placeholder
 		if (!this.isImageLoaded()) {

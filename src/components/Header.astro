@@ -268,7 +268,10 @@ const { button, dark } = Astro.props as Props
 		if (buttonEnglish) {
 			buttonEnglish.classList.remove('bg-burgundy')
 		}
-		// Optionally, add any other code to switch language UI/UX here
+		if (document.querySelector('#grid')) {
+			document.querySelector('#grid').classList.remove('language--en')
+			document.querySelector('#grid').classList.add('language--ar')
+		}
 	}
 
 	function onButtonEnglishHandler() {
@@ -278,6 +281,10 @@ const { button, dark } = Astro.props as Props
 		}
 		if (buttonArabic) {
 			buttonArabic.classList.remove('bg-burgundy')
+		}
+		if (document.querySelector('#grid')) {
+			document.querySelector('#grid').classList.remove('language--ar')
+			document.querySelector('#grid').classList.add('language--en')
 		}
 	}
 
