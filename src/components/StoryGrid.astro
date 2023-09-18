@@ -96,13 +96,30 @@ const { stories } = Astro.props
 		cursor: move;
 	}
 
-	// Hide and show different language titles based on parent #grid class
-	.grid.language--en .language--ar {
-		display: none;
-		color: red;
+	.grid-item--title {
+		margin: 0;
+		box-decoration-break: clone;
+		font-size: 1.4rem;
+		line-height: 1.15;
+		padding: 0 0.4rem;
+		cursor: pointer;
 	}
 
-	.grid.language--ar .language--en {
+	// Set text to be either right or left aligned for EN and AR
+	#grid.language--en .grid-item {
+		text-align: left;
+	}
+
+	#grid.language--ar .grid-item {
+		text-align: right;
+	}
+
+	// Hide and show different language titles based on parent #grid class
+	#grid.language--en .grid-item .language--ar {
+		display: none;
+	}
+
+	#grid.language--ar .grid-item .language--en {
 		display: none;
 	}
 
@@ -122,19 +139,6 @@ const { stories } = Astro.props
 			color: black;
 			background: white;
 		}
-	}
-
-	.grid-item--title {
-		margin: 0;
-		box-decoration-break: clone;
-		font-size: 1.4rem;
-		line-height: 1.15;
-		padding: 0 0.4rem;
-		cursor: pointer;
-	}
-
-	.grid-item--title.language--ar {
-		text-align: right;
 	}
 
 	.grid-item--link {
@@ -213,11 +217,13 @@ class GridItem {
 		// Variable to check if currently loading image
 		this.currentLoadingImage = null
 
-		// Create h2 elements for both titles
-		this.titleEnglish = document.createElement('h2')
-		this.item.append(this.titleEnglish)
+		// Create h2 element for the Arabic title
 		this.titleArabic = document.createElement('h2')
 		this.item.append(this.titleArabic)
+
+		// Create h2 element for the English title
+		this.titleEnglish = document.createElement('h2')
+		this.item.append(this.titleEnglish)
 
 		// Set index and add classes
 		this.index = index
@@ -237,14 +243,9 @@ class GridItem {
 	setNewCard() {
 		// Define vars to be used later
 		let story = stories[this.index % stories.length]
-		let title = story.titles['ar']
 
 		// Add both language titles
 		const titles = story.titles
-
-		if (title.length > 50) {
-			title = truncateWithEllipses(title, 75)
-		}
 
 		// Determine the new image URL
 		let newImageUrl = `/downloaded_images/thumbnails/${story.image.fileName}`
@@ -292,6 +293,7 @@ class GridItem {
 
 		// Set title classes and add text for English title
 		this.titleEnglish.classList.add('grid-item--title')
+		this.titleEnglish.classList.add('language--en')
 		this.titleEnglish.classList.add('box-decoration-clone')
 		this.titleEnglish.classList.add('px-2')
 		this.titleEnglish.classList.add('sm:leading-7')
@@ -302,13 +304,13 @@ class GridItem {
 		this.titleEnglish.classList.add('pt-0')
 		this.titleEnglish.classList.add('sm:pt-8')
 		this.titleEnglish.classList.add('sm:pointer-events-auto')
-		this.titleEnglish.classList.add('language--en')
 
 		// Set Arabic title for the grid item
 		this.titleArabic.textContent = truncateWithEllipses(titles['ar'], 100)
 
 		// Set title classes and add text for Arabic title
 		this.titleArabic.classList.add('grid-item--title')
+		this.titleArabic.classList.add('language--ar')
 		this.titleArabic.classList.add('box-decoration-clone')
 		this.titleArabic.classList.add('px-2')
 		this.titleArabic.classList.add('sm:leading-7')
@@ -319,7 +321,8 @@ class GridItem {
 		this.titleArabic.classList.add('pt-0')
 		this.titleArabic.classList.add('sm:pt-8')
 		this.titleArabic.classList.add('sm:pointer-events-auto')
-		this.titleArabic.classList.add('language--ar')
+		// Set dir="rtl" for this.titleArabic
+		this.titleArabic.setAttribute('dir', 'rtl')
 
 		// Add data-bg attribute to the element to load image later
 		this.item.setAttribute('data-bg', `/downloaded_images/thumbnails/${story.image.fileName}`)
@@ -333,7 +336,7 @@ class GridItem {
 		this.item.setAttribute('href', `/stories/${story.slug}`)
 	}
 
-	// Logic to lazy-load the preview images
+	// Method to lazy-load the preview images
 	lazyLoadImage(fileName, altText) {
 		// Create new image
 		const img = new Image()
