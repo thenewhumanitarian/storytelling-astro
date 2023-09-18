@@ -33,10 +33,9 @@ const { button, dark, footer, header, title } = Astro.props as Props
 		<link rel='icon' type='image/x-icon' href='/favicon.ico' />
 		<title>{title || 'The New Humanitarian'}</title>
 		<!-- To do: Google Tag Manager -->
-		<!-- <ViewTransitions /> -->
 		<!-- To do: Create SEO component for more meta tags -->
-	</head>
-	<body>
+		<!-- <ViewTransitions fallback='swap' /> -->
+	</head><body>
 		<!-- Header  -->
 		{header && <Header dark={dark} button={button} />}
 		<!-- Main content -->
