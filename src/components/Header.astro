@@ -33,18 +33,18 @@ const { button, dark } = Astro.props as Props
 					<div class='isolate inline-flex rounded-xs shadow-sm'>
 						<button
 							type='button'
+							class='transition-colors duration-150 filter-button relative -ml-px inline-flex items-center rounded-r-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
+							id='change-language--en'
+						>
+							EN
+						</button>
+						<button
+							type='button'
 							class='transition-colors duration-150 filter-button relative inline-flex items-center rounded-l-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
 							id='change-language--ar'
 							dir='rtl'
 						>
 							ععر
-						</button>
-						<button
-							type='button'
-							class='transition-colors duration-150 filter-button relative -ml-px inline-flex items-center rounded-r-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
-							id='change-language--en'
-						>
-							EN
 						</button>
 					</div>
 				</div>
