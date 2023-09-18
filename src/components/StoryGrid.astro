@@ -303,6 +303,7 @@ class GridItem {
 		this.item.setAttribute('href', `/stories/${story.slug}`)
 	}
 
+	// Logic to lazy-load the preview images
 	lazyLoadImage(fileName, altText) {
 		// Create new image
 		const img = new Image()

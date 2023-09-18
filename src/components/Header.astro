@@ -243,6 +243,44 @@ const { button, dark } = Astro.props as Props
 		}
 	}
 
+	// Logic to change language
+	const buttonArabic = document.querySelector('#change-language--ar')
+	const buttonEnglish = document.querySelector('#change-language--en')
+
+	function initializeLanguageButton() {
+		const currentLanguage = localStorage.getItem('lang') || 'en'
+
+		if (currentLanguage === 'ar' && buttonArabic) {
+			buttonArabic.classList.add('bg-burgundy')
+			buttonEnglish.classList.remove('bg-burgundy')
+		} else if (buttonEnglish) {
+			// default to English if no language is set in localStorage
+			buttonEnglish.classList.add('bg-burgundy')
+			buttonArabic.classList.remove('bg-burgundy')
+		}
+	}
+
+	function onButtonArabicHandler() {
+		localStorage.setItem('lang', 'ar')
+		if (buttonArabic) {
+			buttonArabic.classList.add('bg-burgundy')
+		}
+		if (buttonEnglish) {
+			buttonEnglish.classList.remove('bg-burgundy')
+		}
+		// Optionally, add any other code to switch language UI/UX here
+	}
+
+	function onButtonEnglishHandler() {
+		localStorage.setItem('lang', 'en')
+		if (buttonEnglish) {
+			buttonEnglish.classList.add('bg-burgundy')
+		}
+		if (buttonArabic) {
+			buttonArabic.classList.remove('bg-burgundy')
+		}
+	}
+
 	function onButtonUnreadHandler() {
 		localStorage.setItem('showAll', 'false')
 		if (buttonAll) {
@@ -278,6 +316,12 @@ const { button, dark } = Astro.props as Props
 				case 'filter-button--unread':
 					onButtonUnreadHandler()
 					break
+				case 'change-language--ar':
+					onButtonArabicHandler()
+					break
+				case 'change-language--en':
+					onButtonEnglishHandler()
+					break
 				// Add cases for other buttons as necessary
 				default:
 					console.error('Unknown button ID:', buttonId)
@@ -289,6 +333,7 @@ const { button, dark } = Astro.props as Props
 	// Trigger when content is all loaded
 	document.addEventListener('DOMContentLoaded', () => {
 		toggleShowAll(null)
+		initializeLanguageButton()
 
 		// Add event listeners to all buttons with class .filter-button
 		const buttons = document.querySelectorAll('.filter-button')
