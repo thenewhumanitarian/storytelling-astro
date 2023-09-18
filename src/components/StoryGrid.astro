@@ -83,7 +83,17 @@ const { stories } = Astro.props
 
 	.filter--read .grid-item:not([data-lastread='never']) {
 		opacity: 0.2;
+		/* transition: opacity 1s ease-out; */
+	}
+
+	.filter--read .grid-item:not([data-lastread='never']),
+	.filter--read .grid-item:not([data-lastread='never']) * {
 		pointer-events: none;
+	}
+
+	.filter--read .grid-item:not([data-lastread='never']):hover,
+	.filter--read .grid-item:not([data-lastread='never']):hover * {
+		cursor: move;
 	}
 
 	@media screen and (min-width: 800px) {
@@ -138,20 +148,6 @@ const { stories } = Astro.props
 </style>
 
 <script async define:vars={{ stories }} is:inline>
-// Check if the user wants to show all stories or only unread stories
-let showAll = localStorage.getItem('showAll') === 'true'
-let readArticles = JSON.parse(localStorage.getItem('readArticles')) || []
-let readArticleSlugs = readArticles.map((article) => article.slug) // Get an array of slugs from the readArticles.
-
-let visibleStories = stories
-
-// Filter out stories that the user has already read
-if (!showAll) {
-	visibleStories = stories.filter((story) => {
-		return !readArticleSlugs.includes(story.slug)
-	})
-}
-
 // Initial check to filter grid if necessary
 function filterGridBasedOnLocalStorage() {
 	if (localStorage.getItem('showAll') === 'false') {
@@ -218,8 +214,8 @@ class GridItem {
 
 	setNewCard() {
 		// Define vars to be used later
-		let story = stories[this.index % visibleStories.length]
-		let title = stories[this.index % visibleStories.length].title
+		let story = stories[this.index % stories.length]
+		let title = stories[this.index % stories.length].title
 
 		// Determine the new image URL
 		let newImageUrl = `/downloaded_images/thumbnails/${story.image.fileName}`
@@ -277,8 +273,9 @@ class GridItem {
 		this.title.classList.add('inline')
 		this.title.classList.add('pt-0')
 		this.title.classList.add('sm:pt-8')
-		// this.title.classList.add('pointer-events-none')
 		this.title.classList.add('sm:pointer-events-auto')
+		// this.title.classList.add('transition-opacity')
+		// this.title.classList.add('pointer-events-none')
 
 		// Add data-bg attribute to the element to load image later
 		this.item.setAttribute('data-bg', `/downloaded_images/thumbnails/${story.image.fileName}`)

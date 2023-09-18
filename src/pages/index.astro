@@ -73,8 +73,8 @@ shuffleArray(stories)
 			document.getElementById('login').classList.remove('hidden')
 			return
 		} else {
-			const authTimestamp:any = new Date(localStorage.getItem('auth'))
-			const currentTime:any = new Date()
+			const authTimestamp: any = new Date(localStorage.getItem('auth'))
+			const currentTime: any = new Date()
 
 			// Get the difference in milliseconds between the two dates
 			const timeDifference = currentTime - authTimestamp
