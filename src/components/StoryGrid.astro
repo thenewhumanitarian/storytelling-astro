@@ -106,20 +106,20 @@ const { stories } = Astro.props
 	}
 
 	// Set text to be either right or left aligned for EN and AR
-	#grid.language--en .grid-item {
+	#grid.lang--en .grid-item {
 		text-align: left;
 	}
 
-	#grid.language--ar .grid-item {
+	#grid.lang--ar .grid-item {
 		text-align: right;
 	}
 
 	// Hide and show different language titles based on parent #grid class
-	#grid.language--en .grid-item .language--ar {
+#grid.lang--ar .grid-item .lang--en {
 		display: none;
 	}
 
-	#grid.language--ar .grid-item .language--en {
+	#grid.lang--ar .grid-item .lang--en {
 		display: none;
 	}
 
@@ -164,7 +164,7 @@ const { stories } = Astro.props
 	}
 </style>
 
-<script async define:vars={{ stories }} is:inline>
+<script async define:vars={{ stories }}>
 // Initial check to filter grid if necessary
 function filterGridBasedOnLocalStorage() {
 	if (localStorage.getItem('showAll') === 'false') {
@@ -217,13 +217,13 @@ class GridItem {
 		// Variable to check if currently loading image
 		this.currentLoadingImage = null
 
-		// Create h2 element for the Arabic title
-		this.titleArabic = document.createElement('h2')
-		this.item.append(this.titleArabic)
-
 		// Create h2 element for the English title
 		this.titleEnglish = document.createElement('h2')
 		this.item.append(this.titleEnglish)
+
+		// Create h2 element for the Arabic title
+		this.titleArabic = document.createElement('h2')
+		this.item.append(this.titleArabic)
 
 		// Set index and add classes
 		this.index = index
@@ -293,7 +293,7 @@ class GridItem {
 
 		// Set title classes and add text for English title
 		this.titleEnglish.classList.add('grid-item--title')
-		this.titleEnglish.classList.add('language--en')
+		this.titleEnglish.classList.add('lang--en')
 		this.titleEnglish.classList.add('box-decoration-clone')
 		this.titleEnglish.classList.add('px-2')
 		this.titleEnglish.classList.add('sm:leading-7')
@@ -304,13 +304,14 @@ class GridItem {
 		this.titleEnglish.classList.add('pt-0')
 		this.titleEnglish.classList.add('sm:pt-8')
 		this.titleEnglish.classList.add('sm:pointer-events-auto')
+		this.titleEnglish.setAttribute('dir', 'ltr')
 
 		// Set Arabic title for the grid item
 		this.titleArabic.textContent = truncateWithEllipses(titles['ar'], 100)
 
 		// Set title classes and add text for Arabic title
 		this.titleArabic.classList.add('grid-item--title')
-		this.titleArabic.classList.add('language--ar')
+		this.titleArabic.classList.add('lang--ar')
 		this.titleArabic.classList.add('box-decoration-clone')
 		this.titleArabic.classList.add('px-2')
 		this.titleArabic.classList.add('sm:leading-7')
@@ -321,7 +322,6 @@ class GridItem {
 		this.titleArabic.classList.add('pt-0')
 		this.titleArabic.classList.add('sm:pt-8')
 		this.titleArabic.classList.add('sm:pointer-events-auto')
-		// Set dir="rtl" for this.titleArabic
 		this.titleArabic.setAttribute('dir', 'rtl')
 
 		// Add data-bg attribute to the element to load image later
