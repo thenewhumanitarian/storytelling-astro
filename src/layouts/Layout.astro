@@ -7,13 +7,14 @@ import '../styles/tailwind.css'
 import '../styles/global.css'
 
 export interface Props {
-	button?: string
+	filterButtons?: boolean
+	languageButtons?: boolean
 	dark?: boolean
 	header?: boolean
 	title?: string
 }
 
-const { button, dark, header, title } = Astro.props as Props
+const { filterButtons, languageButtons, dark, header, title } = Astro.props as Props
 ---
 
 <!doctype html>
@@ -33,9 +34,10 @@ const { button, dark, header, title } = Astro.props as Props
 		<!-- To do: Google Tag Manager -->
 		<!-- To do: Create SEO component for more meta tags -->
 		<!-- <ViewTransitions fallback='swap' /> -->
-	</head><body>
+	</head>
+	<body>
 		<!-- Header  -->
-		{header && <Header dark={dark} button={button} />}
+		{header && <Header dark={dark} filterButtons={filterButtons} languageButtons={languageButtons} />}
 		<!-- Main content -->
 		<slot />
 		<!-- Footer  -->

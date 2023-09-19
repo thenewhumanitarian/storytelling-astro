@@ -5,11 +5,12 @@ import LanguageButtons from './LanguageButtons.astro'
 import MenuIcon from './Menu.astro'
 
 export interface Props {
-	button?: string
+	filterButtons?: boolean
+	languageButtons?: boolean
 	dark?: boolean
 }
 
-const { button, dark } = Astro.props as Props
+const { filterButtons, languageButtons, dark } = Astro.props as Props
 ---
 
 <header class={`${dark ? 'bg-black shadow-xs shadow-white' : 'bg-white'} flex items-center justify-between w-full cursor-default h-20 top-0 left-0 z-50`}>
@@ -17,10 +18,14 @@ const { button, dark } = Astro.props as Props
 		<div class='flex justify-start gap-x-2 sm:gap-x-8 items-center'>
 			<div class={`${dark ? 'text-white' : 'text-black'} fill-current flex gap-3 items-center justify-start`}>
 				<MenuIcon />
-				<div class='fixed top-24 right-5 sm:top-0 sm:left-0 shadow-lg sm:shadow-none sm:relative flex items-center gap-3 z-50'>
-					<LanguageButtons />
-				</div>
-				{button === 'filter' && <FilterButtons />}
+				{
+					languageButtons && (
+						<div class='fixed top-24 right-5 sm:top-0 sm:left-0 shadow-lg sm:shadow-none sm:relative flex items-center gap-3 z-50'>
+							<LanguageButtons />
+						</div>
+					)
+				}
+				{filterButtons && <FilterButtons />}
 			</div>
 		</div>
 		<div class='flex justify-center'>
