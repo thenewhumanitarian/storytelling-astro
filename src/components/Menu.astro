@@ -16,14 +16,16 @@ import MenuOverlay from './MenuOverlay.astro'
 	// Select menu overlay element
 	const menuOverlay = document.getElementById('menu-overlay')
 
-	menuButton.addEventListener('click', function () {
-		fadeIn(menuOverlay)
-		document.body.classList.add('no-scroll')
-	})
+	document.addEventListener('DOMContentLoaded', () => {
+		menuButton.addEventListener('click', function () {
+			fadeIn(menuOverlay)
+			document.body.classList.add('no-scroll')
+		})
 
-	menuOverlay.addEventListener('click', function () {
-		fadeOut(menuOverlay)
-		document.body.classList.remove('no-scroll')
+		menuOverlay.addEventListener('click', function () {
+			fadeOut(menuOverlay)
+			document.body.classList.remove('no-scroll')
+		})
 	})
 
 	function fadeIn(element) {
