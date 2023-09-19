@@ -1,0 +1,44 @@
+<div id='menu-overlay' class='flex top-0 left-0 w-full h-screen bg-black items-center justify-center z-40'>
+	<div class='flex flex-row gap-x-5'>
+		<nav class='space-y-4 flex flex-col text-right'>
+			<a href='/about' class='text-white text-lg sm:text-4xl hover:text-burgundy transition-colors'>حول هذا المشروع</a>
+			<a href='/feedback' class='text-white text-lg sm:text-4xl hover:text-burgundy transition-colors'>أخبرنا عن انطباعك</a>
+			<a href='/share' class='text-white text-lg sm:text-4xl hover:text-burgundy transition-colors'>رابط آخر</a>
+			<!-- Add more links as needed -->
+		</nav>
+		<nav class='space-y-4 flex flex-col text-left'>
+			<a href='/about' class='text-white text-lg sm:text-4xl hover:text-burgundy transition-colors'>About this project</a>
+			<a href='/feedback' class='text-white text-lg sm:text-4xl hover:text-burgundy transition-colors'>Give us feedback</a>
+			<a href='/share' class='text-white text-lg sm:text-4xl hover:text-burgundy transition-colors'>Another link</a>
+			<!-- Add more links as needed -->
+		</nav>
+	</div>
+	<div class='text-white absolute top-24 right-10 w-10 h-10 cursor-pointer hover:text-burgundy transition-colors' id='close-button'>
+		<svg class='fill-current' width='100%' height='90' viewBox='0 0 90 90' fill='none' xmlns='http://www.w3.org/2000/svg'>
+			<path
+				class='fill-current'
+				fill-rule='evenodd'
+				clip-rule='evenodd'
+				d='M1.84937 1.84937C4.02123 -0.317302 7.53683 -0.317302 9.7087 1.84937L44.6674 36.8134L79.626 1.84937C81.7979 -0.317302 85.3135 -0.317302 87.4854 1.84937C89.652 4.02123 89.652 7.53683 87.4854 9.7087L52.5214 44.6674L87.4854 79.626C89.652 81.7979 89.652 85.3135 87.4854 87.4854C85.3135 89.652 81.7979 89.652 79.626 87.4854L44.6674 52.5214L9.7087 87.4854C7.53683 89.652 4.02123 89.652 1.84937 87.4854C-0.317302 85.3135 -0.317302 81.7979 1.84937 79.626L36.8134 44.6674L1.84937 9.7087C-0.317302 7.53683 -0.317302 4.02123 1.84937 1.84937Z'
+				fill='black'></path>
+		</svg>
+	</div>
+</div>
+
+<style>
+	#menu-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.85);
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.5s;
+		z-index: 9999;
+	}
+	#close-button {
+		z-index: 9999;
+	}
+</style>

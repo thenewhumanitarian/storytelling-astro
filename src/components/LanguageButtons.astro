@@ -1,0 +1,93 @@
+<!-- Language icon (globe) -->
+<div class='gap-2 ml-4 hidden sm:flex'>
+	<svg width='18px' viewBox='0 0 105 105' fill='none' xmlns='http://www.w3.org/2000/svg'>
+		<g clip-path='url(#clip0_222_26)'>
+			<path
+				d='M89.2986 15.282C79.4108 5.39895 66.2719 -0.0454712 52.2903 -0.0454712C38.3088 -0.0454712 25.1694 5.39883 15.282 15.282C-5.12523 35.6856 -5.12523 68.8914 15.282 89.2999C25.1698 99.183 38.3088 104.627 52.2903 104.627C66.2719 104.627 79.4113 99.1831 89.2986 89.2999C109.706 68.8927 109.706 35.6905 89.2986 15.282ZM91.0224 74.5522H76.9011C78.4429 68.5285 79.367 61.8099 79.5346 54.6659H96.8822C96.5135 61.5659 94.5609 68.3889 91.0224 74.5522ZM58.7162 96.5064C57.3563 96.7027 55.9773 96.8368 54.5887 96.9086V79.1491H70.5965C67.6804 87.2892 63.5045 93.5093 58.7162 96.5064ZM33.9844 79.149H49.9922V96.9085C48.6036 96.8366 47.2246 96.7026 45.8646 96.5062C41.0764 93.5088 36.9004 87.289 33.9844 79.149ZM7.70186 54.6659H25.0495C25.2171 61.8101 26.1412 68.5286 27.683 74.5522H13.5617C10.0184 68.3897 8.06568 61.566 7.70186 54.6659ZM14.6257 28.2731H28.1574C26.3187 34.7804 25.2222 42.1639 25.0449 50.0692H7.69242C8.06591 42.4558 10.3833 34.9243 14.6257 28.2731ZM45.8642 8.0755C47.2241 7.87917 48.6031 7.7451 49.9917 7.67327V23.6762H34.6446C37.5176 16.3979 41.4254 10.8532 45.8642 8.0755ZM69.9353 23.6763H54.5882V7.67834C55.9768 7.75016 57.3558 7.88423 58.7158 8.08055C63.1545 10.853 67.0624 16.3977 69.9353 23.6763ZM71.5394 28.2731C73.517 34.7229 74.738 42.1689 74.9343 50.0692H54.5883V28.2731H71.5394ZM49.9922 28.2731V50.0692H29.6462C29.8426 42.1685 31.0635 34.7221 33.0411 28.2731H49.9922ZM29.6462 54.6659H49.9922V74.5522H32.5293C30.863 68.5621 29.8331 61.8014 29.6462 54.6659ZM54.589 74.5522V54.6659H74.9349C74.7481 61.8005 73.7187 68.5617 72.0523 74.5522H54.589ZM79.5317 50.0692C79.3593 42.1637 78.2579 34.7797 76.4192 28.2731H89.9509C94.1933 34.9241 96.5109 42.4557 96.8843 50.0692H79.5317ZM86.5896 23.6763H74.954C73.0771 18.4667 70.6876 13.98 67.9152 10.4229C73.8383 12.6303 79.2778 16.0971 83.8789 20.6986C84.8413 21.6611 85.7373 22.6565 86.5896 23.6763ZM36.6662 10.4229C33.8938 13.9806 31.5044 18.4673 29.6274 23.6763H17.9918C18.8441 22.6564 19.7395 21.6605 20.6971 20.7028C25.3035 16.0964 30.7435 12.6303 36.6662 10.4229ZM16.5985 79.149H29.0294C30.9879 85.1057 33.5879 90.2099 36.6716 94.1602C30.7485 91.9528 25.309 88.4861 20.7079 83.8845C19.1996 82.3809 17.8388 80.7962 16.5985 79.149ZM67.9145 94.1602C70.9933 90.2098 73.5981 85.1055 75.5566 79.149H87.9875C86.7474 80.7962 85.3827 82.3858 83.8839 83.8846C79.2776 88.4862 73.8372 91.9528 67.9145 94.1602Z'
+				fill='white'></path>
+		</g>
+		<defs>
+			<clipPath id='clip0_222_26'>
+				<rect width='105' height='105' fill='white'></rect>
+			</clipPath>
+		</defs>
+	</svg>
+</div>
+<!-- Language buttons  -->
+<div class='isolate inline-flex rounded-xs shadow-sm' transition:persist>
+	<button
+		type='button'
+		class='transition-colors duration-150 relative -ml-px inline-flex items-center rounded-r-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
+		id='change-language--en'
+		transition:persist
+	>
+		EN
+	</button>
+	<button
+		type='button'
+		class='transition-colors duration-150 relative inline-flex items-center rounded-l-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
+		id='change-language--ar'
+		dir='rtl'
+		transition:persist
+	>
+		ععر
+	</button>
+</div>
+
+<script>
+	// Logic to change language
+	const buttonArabic = document.querySelector('#change-language--ar')
+	const buttonEnglish = document.querySelector('#change-language--en')
+
+	if (buttonArabic) {
+		buttonArabic.addEventListener('click', onButtonArabicHandler)
+	}
+	if (buttonEnglish) {
+		buttonEnglish.addEventListener('click', onButtonEnglishHandler)
+	}
+
+	function onButtonArabicHandler() {
+		localStorage.setItem('lang', 'ar')
+		if (buttonArabic) {
+			buttonArabic.classList.add('bg-burgundy')
+		}
+		if (buttonEnglish) {
+			buttonEnglish.classList.remove('bg-burgundy')
+		}
+		if (document.querySelector('#grid')) {
+			document.querySelector('#grid').classList.remove('language--en')
+			document.querySelector('#grid').classList.add('language--ar')
+		}
+	}
+
+	function onButtonEnglishHandler() {
+		localStorage.setItem('lang', 'en')
+		if (buttonEnglish) {
+			buttonEnglish.classList.add('bg-burgundy')
+		}
+		if (buttonArabic) {
+			buttonArabic.classList.remove('bg-burgundy')
+		}
+		if (document.querySelector('#grid')) {
+			document.querySelector('#grid').classList.remove('language--ar')
+			document.querySelector('#grid').classList.add('language--en')
+		}
+	}
+
+	function initializeLanguageButton() {
+		const currentLanguage = localStorage.getItem('lang')
+
+		if (currentLanguage === 'ar' && buttonArabic) {
+			buttonArabic.classList.add('bg-burgundy')
+			buttonEnglish.classList.remove('bg-burgundy')
+		} else if (buttonEnglish) {
+			buttonEnglish.classList.add('bg-burgundy')
+			buttonArabic.classList.remove('bg-burgundy')
+		}
+	}
+
+	document.addEventListener('astro:page-load', function () {
+		initializeLanguageButton()
+		console.log('page swap done')
+	})
+</script>

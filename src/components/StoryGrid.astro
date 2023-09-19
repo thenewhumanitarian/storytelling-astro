@@ -113,7 +113,7 @@ class GridItem {
 
 		// Check for initial load to decide between lazy loading or direct image set
 		if (this.initialLoad) {
-			this.lazyLoadImage(story.image.fileName)
+			this.lazyLoadImage(story.image.fileName, story.title)
 		} else {
 			const imageElement = document.createElement('img')
 			imageElement.src = newImageUrl
@@ -174,7 +174,7 @@ class GridItem {
 
 		// Lazy load the image to replace the blurry placeholder
 		if (!this.isImageLoaded()) {
-			this.lazyLoadImage(story.image.fileName)
+			this.lazyLoadImage(story.image.fileName, story.title)
 		}
 
 		// Add href to this grid item using slug
@@ -198,13 +198,14 @@ class GridItem {
 				imageElement.src = img.src
 				imageElement.classList.add('full-image')
 				this.item.appendChild(imageElement)
-
 				// This ensures the next repaint will have the image added but not visible
 				requestAnimationFrame(() => {
-					requestAnimationFrame(() => {
-						imageElement.classList.add('loaded')
-					})
+					imageElement.classList.add('loaded')
 				})
+				if (altText) {
+					// Add altText to image
+					imageElement.setAttribute('alt', altText)
+				}
 			}
 		}
 
@@ -228,10 +229,6 @@ class Drag {
 		this.touchStartTime = 0
 
 		ele.addEventListener('click', this.onClick.bind(this), false)
-
-		// if ('ontouchend' in window && window.innerWidth <= 768) { // 768px can be adjusted based on your mobile breakpoint
-		// 		ele.addEventListener('touchend', this.onTap.bind(this));
-		// }
 
 		ele.addEventListener('touchstart', this.onStart.bind(this), false)
 		ele.addEventListener('touchmove', this.onMove.bind(this), false)

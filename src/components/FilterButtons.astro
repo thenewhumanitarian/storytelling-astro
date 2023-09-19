@@ -1,0 +1,98 @@
+<div class='fixed top-24 left-5 sm:top-0 sm:left-0 shadow-lg sm:shadow-none sm:relative flex items-center gap-3 z-50'>
+	<div class='gap-2 ml-4 hidden sm:flex'>
+		<!-- Filter icon (funnel) -->
+		<svg width='14px' viewBox='0 0 117 118' xmlns='http://www.w3.org/2000/svg'>
+			<path
+				d='M4.50008 0.333252C1.37501 0.333252 -0.708187 3.87485 0.95848 6.58325L46.1665 66.9993V112.833C46.1665 115.958 49.4998 118.041 52.2081 116.583L68.8747 108.249C70.3331 107.624 71.1665 106.166 71.1665 104.499V66.9993L116.374 6.58325C118.041 3.87499 115.958 0.333252 112.833 0.333252H4.50008Z'
+			></path>
+		</svg>
+	</div>
+	<!-- Filter buttons -->
+	<div class='isolate inline-flex rounded-xs shadow-sm'>
+		<button
+			type='button'
+			class='transition-colors duration-150 filter-button relative inline-flex items-center rounded-l-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
+			id='filter-button--all'
+		>
+			All
+		</button>
+		<button
+			type='button'
+			class='transition-colors duration-150 filter-button relative -ml-px inline-flex items-center rounded-r-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
+			id='filter-button--unread'
+		>
+			Unread
+		</button>
+	</div>
+</div>
+
+<script>
+	// Logic for show/hide unread articles
+	const buttonAll = document.querySelector('#filter-button--all')
+	const buttonUnread = document.querySelector('#filter-button--unread')
+
+	function onButtonAllHandler() {
+		localStorage.setItem('showAll', 'true')
+		if (buttonAll) {
+			buttonAll.classList.remove('bg-black')
+			buttonAll.classList.add('bg-burgundy')
+		}
+		if (buttonUnread) {
+			buttonUnread.classList.add('bg-black')
+			buttonUnread.classList.remove('bg-burgundy')
+		}
+		if (document.querySelector('#grid')) {
+			document.querySelector('#grid').classList.remove('filter--read')
+		}
+	}
+
+	function onButtonUnreadHandler() {
+		localStorage.setItem('showAll', 'false')
+		if (buttonAll) {
+			buttonAll.classList.remove('bg-burgundy')
+			buttonAll.classList.add('bg-black')
+		}
+		if (buttonUnread) {
+			buttonUnread.classList.add('bg-burgundy')
+			buttonUnread.classList.remove('bg-black')
+		}
+		if (document.querySelector('#grid')) {
+			document.querySelector('#grid').classList.add('filter--read')
+		}
+	}
+
+	// Named function for the event listener
+	function buttonHandler(event) {
+		if (!event) {
+			if (localStorage.getItem('showAll') === 'false' || !localStorage.getItem('showAll')) {
+				onButtonUnreadHandler()
+			} else {
+				onButtonAllHandler()
+			}
+		} else {
+			// Get the id of the clicked button
+			const buttonId = event.currentTarget.id
+
+			// Decide what to do based on the button's ID
+			switch (buttonId) {
+				case 'filter-button--all':
+					onButtonAllHandler()
+					break
+				case 'filter-button--unread':
+					onButtonUnreadHandler()
+					break
+				// Add cases for other buttons as necessary
+				default:
+					console.error('Unknown button ID:', buttonId)
+					break
+			}
+		}
+	}
+
+	buttonHandler(null)
+
+	const buttons = document.querySelectorAll('.filter-button')
+	for (let button of buttons) {
+		button.addEventListener('click', buttonHandler)
+	}
+</script>
