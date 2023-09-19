@@ -77,14 +77,27 @@
 	function initializeLanguageButton() {
 		const currentLanguage = localStorage.getItem('lang')
 
+		if (!currentLanguage) {
+			// To do: Set based on browser lang
+			localStorage.setItem('lang', 'en')
+		}
+
 		if (currentLanguage === 'ar' && buttonArabic) {
 			buttonArabic.classList.add('bg-burgundy')
 			buttonEnglish.classList.remove('bg-burgundy')
+			// Remove English titles
+			document.querySelector('#grid').classList.remove('language--en')
+			document.querySelector('#grid').classList.add('language--ar')
 		} else if (buttonEnglish) {
 			buttonEnglish.classList.add('bg-burgundy')
 			buttonArabic.classList.remove('bg-burgundy')
+			// Remove Arabic titles
+			document.querySelector('#grid').classList.remove('language--ar')
+			document.querySelector('#grid').classList.add('language--en')
 		}
 	}
+
+	initializeLanguageButton()
 
 	document.addEventListener('astro:page-load', function () {
 		initializeLanguageButton()
