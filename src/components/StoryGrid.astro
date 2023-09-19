@@ -414,6 +414,7 @@ class InfiniteGrid {
 const grid = optimalGridDimensions()
 const Infinite = new InfiniteGrid(grid.cols, grid.rows)
 
+// Re-calculate when user resizes browser
 window.addEventListener('resize', () => {
 	const grid = optimalGridDimensions()
 	Infinite.setGrid(grid.cols, grid.rows)
