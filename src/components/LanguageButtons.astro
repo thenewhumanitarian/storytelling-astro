@@ -85,15 +85,19 @@
 		if (currentLanguage === 'ar' && buttonArabic) {
 			buttonArabic.classList.add('bg-burgundy')
 			buttonEnglish.classList.remove('bg-burgundy')
-			// Remove English titles
-			document.querySelector('#grid').classList.remove('language--en')
-			document.querySelector('#grid').classList.add('language--ar')
+			if (document.querySelector('#grid')) {
+				// Remove English titles
+				document.querySelector('#grid').classList.remove('language--en')
+				document.querySelector('#grid').classList.add('language--ar')
+			}
 		} else if (buttonEnglish) {
 			buttonEnglish.classList.add('bg-burgundy')
 			buttonArabic.classList.remove('bg-burgundy')
-			// Remove Arabic titles
-			document.querySelector('#grid').classList.remove('language--ar')
-			document.querySelector('#grid').classList.add('language--en')
+			if (document.querySelector('#grid')) {
+				// Remove Arabic titles
+				document.querySelector('#grid').classList.remove('language--ar')
+				document.querySelector('#grid').classList.add('language--en')
+			}
 		}
 	}
 
