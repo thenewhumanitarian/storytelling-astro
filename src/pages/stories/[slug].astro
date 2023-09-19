@@ -1,10 +1,5 @@
 ---
-// export const prerender = true;
-
-// if (!Astro.cookies.has('auth')) {
-// 	return Astro.redirect('/login')
-// }
-
+import BackButton from '../../components/BackButton.astro'
 import Layout from '../../layouts/Layout.astro'
 import stories from '../../data/stories.json'
 
@@ -28,11 +23,7 @@ const { story } = Astro.props
 
 <Layout dark title='The Yemen Listening Project' header={true} footer={false}>
 	<div class='w-full max-w-5xl mx-auto mt-4 sm:mt-12 lg:mt-16 mb-8 sm:mb-24 px-4' class='story-detail-page--wrapper' id='story-wrapper'>
-		<a href='/' target='_self'>
-			<button class='bg-burgundy text-base sm:text-lg rounded-xs text-white px-2 py-1 flex justify-center items-center gap-x-1 mb-6' id='back-button'>
-				<span>←</span><span class='inline'>Back</span>
-			</button>
-		</a>
+		<BackButton />
 		<h1 class='text-left w-full font-serif lg:text-5xl lg:pt-7'>{story.title}</h1>
 		<p class='text-xl mb-^6 sm:mb-10'>{story.subheading}</p>
 		<Image
@@ -89,6 +80,6 @@ if (!readArticles.some((article) => article.slug === slug)) {
 	readArticles.push(articleObject)
 
 	// Save the updated array back to localStorage
-	localStorage.setItem('readArticles', JSON.stringify(readArticles))
-}
+		localStorage.setItem('readArticles', JSON.stringify(readArticles))
+	}
 </script>
