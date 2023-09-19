@@ -21,7 +21,7 @@ export async function getStaticPaths() {
 const { story } = Astro.props
 ---
 
-<Layout dark title='The Yemen Listening Project' header={true} footer={false}>
+<Layout dark title='The Yemen Listening Project' header={true}>
 	<div class='w-full max-w-5xl mx-auto mt-2 sm:mt-12 lg:mt-16 mb-8 sm:mb-24 px-4' class='story-detail-page--wrapper' id='story-wrapper'>
 		<BackButton />
 		<h1 class='pt-6 sm:pt-0 text-left w-full font-serif lg:text-5xl lg:pt-7'>{story.title}</h1>
