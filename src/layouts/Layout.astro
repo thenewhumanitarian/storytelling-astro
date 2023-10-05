@@ -9,12 +9,13 @@ import '../styles/global.css'
 export interface Props {
 	filterButtons?: boolean
 	languageButtons?: boolean
+	switchViewButtons?: boolean
 	dark?: boolean
 	header?: boolean
 	title?: string
 }
 
-const { filterButtons, languageButtons, dark, header, title } = Astro.props as Props
+const { filterButtons, languageButtons, dark, header, title, switchViewButtons } = Astro.props as Props
 ---
 
 <!doctype html>
@@ -37,7 +38,7 @@ const { filterButtons, languageButtons, dark, header, title } = Astro.props as P
 	</head>
 	<body>
 		<!-- Header  -->
-		{header && <Header dark={dark} filterButtons={filterButtons} languageButtons={languageButtons} />}
+		{header && <Header dark={dark} filterButtons={filterButtons} languageButtons={languageButtons} switchViewButtons={switchViewButtons} />}
 		<!-- Main content -->
 		<slot />
 		<!-- Footer  -->

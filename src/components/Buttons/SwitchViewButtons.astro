@@ -1,0 +1,137 @@
+<div class='fixed bottom-4 left-4 -mt-2 sm:-mt-0 sm:top-0 sm:left-0 shadow-lg sm:shadow-none sm:relative flex items-center gap-3 z-50'>
+	<div class='gap-2 ml-4 hidden xl:flex'>
+		<!-- View icon (grid) -->
+		<svg width='14' height='14' viewBox='0 0 112 111' fill='none' xmlns='http://www.w3.org/2000/svg'>
+			<path
+				d='M51.6773 51.948H0.109344V0.379997H51.6773V51.948ZM111.224 0.379997H59.656V51.948H111.224V0.379997ZM51.6773 59.3853H0.109344V110.953H51.6773V59.3853ZM111.224 59.3853H59.656V110.953H111.224V59.3853Z'
+				fill='white'></path>
+		</svg>
+	</div>
+	<!-- View change buttons -->
+	<div class='isolate inline-flex rounded-xs shadow-sm'>
+		<button
+			type='button'
+			class='transition-colors duration-150 view-button relative inline-flex items-center rounded-l-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
+			id='view-button--grid'
+		>
+			Grid
+		</button>
+		<button
+			type='button'
+			class='transition-colors duration-150 view-button relative -ml-px inline-flex items-center rounded-r-xs bg-black px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 hover:bg-white hover:text-burgundy focus:z-10'
+			id='view-button--list'
+		>
+			List
+		</button>
+	</div>
+</div>
+
+<script>
+	// Logic for changing the view from grid to list
+	const buttonGrid = document.querySelector('#view-button--grid')
+	const buttonList = document.querySelector('#view-button--list')
+
+	function onButtonGridHandler() {
+		localStorage.setItem('currentView', 'grid')
+		// Adjust buttons' state
+		if (buttonGrid) {
+			buttonGrid.classList.remove('bg-black')
+			buttonGrid.classList.add('bg-burgundy')
+		}
+		if (buttonList) {
+			buttonList.classList.add('bg-black')
+			buttonList.classList.remove('bg-burgundy')
+		}
+		// Activate pointer events for #stories-container--grid
+		const gridWrapper = document.querySelector('#stories-container--grid') as HTMLElement
+		if (gridWrapper) {
+			gridWrapper.style.pointerEvents = 'auto'
+		}
+		// Show the grid view, hide the list view
+		const gridElement = document.querySelector('#grid') as HTMLElement
+		if (gridElement) {
+			gridElement.style.display = 'grid'
+			// Set pointer events of the grid to auto
+			gridElement.style.pointerEvents = 'auto'
+		}
+		const listElement = document.querySelector('#list') as HTMLElement
+		if (listElement) {
+			listElement.style.display = 'none'
+		}
+	}
+
+	function onButtonListHandler() {
+		localStorage.setItem('currentView', 'list')
+		// Adjust buttons' state
+		if (buttonGrid) {
+			buttonGrid.classList.remove('bg-burgundy')
+			buttonGrid.classList.add('bg-black')
+		}
+		if (buttonList) {
+			buttonList.classList.add('bg-burgundy')
+			buttonList.classList.remove('bg-black')
+		}
+		// Deactivate pointer events for #stories-container--grid
+		const gridWrapper = document.querySelector('#stories-container--grid') as HTMLElement
+		if (gridWrapper) {
+			gridWrapper.style.pointerEvents = 'none'
+		}
+		// Show the list view, hide the grid view
+		const gridElement = document.querySelector('#grid') as HTMLElement
+		if (gridElement) {
+			gridElement.style.display = 'none'
+			// Set pointer events of the grid to none
+			gridElement.style.pointerEvents = 'none'
+		}
+		const listElement = document.querySelector('#list') as HTMLElement
+		if (listElement) {
+			listElement.style.display = 'block'
+		}
+	}
+
+	// Named function for the event listener
+	function buttonHandler(event) {
+		if (!event) {
+			// If the user has not set a view yet, set the default view
+			if (!localStorage.getItem('currentView')) {
+				// If user loads the site on mobile for the first time, show the list view, not the grid
+				if (window.innerWidth < 640) {
+					onButtonListHandler()
+					return
+				} else {
+					onButtonGridHandler()
+					return
+				}
+			} else if (localStorage.getItem('currentView') === 'list') {
+				onButtonListHandler()
+			} else if (localStorage.getItem('currentView') === 'grid') {
+				onButtonGridHandler()
+			}
+		} else {
+			// Get the id of the clicked button
+			const buttonId = event.currentTarget.id
+
+			// Decide what to do based on the button's ID
+			switch (buttonId) {
+				case 'view-button--grid':
+					onButtonGridHandler()
+					break
+				case 'view-button--list':
+					onButtonListHandler()
+					break
+				// Add cases for other buttons as necessary
+				default:
+					console.error('Unknown button ID:', buttonId)
+					break
+			}
+		}
+	}
+
+	// Trigger without event for initial load
+	buttonHandler(null)
+
+	const buttons = document.querySelectorAll('.view-button')
+	for (let button of buttons) {
+		button.addEventListener('click', buttonHandler)
+	}
+</script>

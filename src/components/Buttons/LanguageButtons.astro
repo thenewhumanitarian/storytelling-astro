@@ -58,6 +58,10 @@
 			document.querySelector('#grid').classList.remove('language--en')
 			document.querySelector('#grid').classList.add('language--ar')
 		}
+		if (document.querySelector('#list')) {
+			document.querySelector('#list').classList.remove('language--en')
+			document.querySelector('#list').classList.add('language--ar')
+		}
 	}
 
 	function onButtonEnglishHandler() {
@@ -71,6 +75,10 @@
 		if (document.querySelector('#grid')) {
 			document.querySelector('#grid').classList.remove('language--ar')
 			document.querySelector('#grid').classList.add('language--en')
+		}
+		if (document.querySelector('#list')) {
+			document.querySelector('#list').classList.remove('language--ar')
+			document.querySelector('#list').classList.add('language--en')
 		}
 	}
 
@@ -90,6 +98,11 @@
 				document.querySelector('#grid').classList.remove('language--en')
 				document.querySelector('#grid').classList.add('language--ar')
 			}
+			if (document.querySelector('#list')) {
+				// Remove English titles
+				document.querySelector('#list').classList.remove('language--en')
+				document.querySelector('#list').classList.add('language--ar')
+			}
 		} else if (buttonEnglish) {
 			buttonEnglish.classList.add('bg-burgundy')
 			buttonArabic.classList.remove('bg-burgundy')
@@ -97,6 +110,11 @@
 				// Remove Arabic titles
 				document.querySelector('#grid').classList.remove('language--ar')
 				document.querySelector('#grid').classList.add('language--en')
+			}
+			if (document.querySelector('#list')) {
+				// Remove Arabic titles
+				document.querySelector('#list').classList.remove('language--ar')
+				document.querySelector('#list').classList.add('language--en')
 			}
 		}
 	}

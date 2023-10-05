@@ -2,20 +2,41 @@
 const { stories } = Astro.props
 ---
 
-<div class={`stories-container`} id='stories-container'>
+<div class={`stories-container--grid`} id='stories-container--grid'>
 	<div id='grid' class='grid'></div>
+</div>
+<div class={`stories-container--list mt-40`} id='stories-container--list'>
+	<div class='list' id='list'>
+	{
+		stories.map((story, i) => {
+			return (
+				<a href={`/stories/${story.slug}`} class={`flex justify-start items-center gap-x-3 story-item p-5 ${i % 2 === 0 ? 'bg-gray-800' : ''}`} data-slug={story.slug}>
+					{story.image.fileName && <img src={`/downloaded_images/thumbnails/${story.image.fileName}`} alt={story.title} class='w-14 h-14' /> }
+					<h3 class='story-item--title lang--ar text-white m-0'>{story.titles['ar']}</h3>
+					<h3 class='story-item--title lang--en text-white m-0'>{story.titles['en']}</h3>
+				</a>
+				// <div class={`story-item p-5 ${i % 2 === 0 ? 'bg-gray-800' : ''}`} data-slug={story.slug}>
+				// 	<h3 class='story-item--title lang--ar text-white m-0'>{story.titles['ar']}</h3>
+				// 	<h3 class='story-item--title lang--en text-white m-0'>{story.titles['en']}</h3>
+				// </div>
+			)
+		})
+	}
+	</div>
 </div>
 
 <!-- Library to help moving around the grid -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js' is:inline></script>
 
 <script async define:vars={{ stories }} is:inline>
-// Initial check to filter grid if necessary
+// Initial check to filter grid if necessary, same for list
 function filterGridBasedOnLocalStorage() {
 	if (localStorage.getItem('showAll') === 'false') {
 		document.getElementById('grid').classList.add('filter--read')
+		document.getElementById('list').classList.add('filter--read')
 	} else {
 		document.getElementById('grid').classList.remove('filter--read')
+		document.getElementById('list').classList.remove('filter--read')
 	}
 }
 
@@ -36,14 +57,14 @@ window.addEventListener('pageshow', function () {
 	let readArticles = JSON.parse(localStorage.getItem('readArticles')) || []
 
 	// Update grid elements based on read articles
-	document.querySelectorAll('.grid-element').forEach((element) => {
+	document.querySelectorAll('.story-item').forEach((element) => {
 		const slug = element.getAttribute('data-slug')
 		const readArticle = readArticles.find((article) => article.slug === slug)
 
 		// Update element based on whether the article has been read before
 		if (readArticle) {
 			element.setAttribute('data-lastread', readArticle.timestamp)
-			element.style.opacity = 0.2
+			// element.style.opacity = 0.2
 		} else {
 			element.setAttribute('data-lastread', 'never')
 		}
@@ -72,7 +93,7 @@ class GridItem {
 
 		// Set index and add classes
 		this.index = index
-		this.item.classList.add('grid-item')
+		this.item.classList.add('story-item')
 		this.setNewCard()
 	}
 
@@ -137,7 +158,7 @@ class GridItem {
 		this.titleEnglish.textContent = truncateWithEllipses(titles['en'], 100)
 
 		// Set title classes and add text for English title
-		this.titleEnglish.classList.add('grid-item--title')
+		this.titleEnglish.classList.add('story-item--title')
 		this.titleEnglish.classList.add('lang--en')
 		this.titleEnglish.classList.add('box-decoration-clone')
 		this.titleEnglish.classList.add('px-2')
@@ -156,7 +177,7 @@ class GridItem {
 		this.titleArabic.textContent = truncateWithEllipses(titles['ar'], 100)
 
 		// Set title classes and add text for Arabic title
-		this.titleArabic.classList.add('grid-item--title')
+		this.titleArabic.classList.add('story-item--title')
 		this.titleArabic.classList.add('lang--ar')
 		this.titleArabic.classList.add('box-decoration-clone')
 		this.titleArabic.classList.add('px-2')
@@ -243,6 +264,8 @@ class Drag {
 	}
 
 	onClick(ev) {
+		// Check if #grid is hidden and if yes return
+		if (document.getElementById('grid').style.display === 'none') return
 		ev = ev.type == 'touchstart' ? ev.touches[0] : ev
 
 		if (this.dragging) {
@@ -251,6 +274,7 @@ class Drag {
 	}
 
 	onStart(ev) {
+		if (document.getElementById('grid').style.display === 'none') return
 		this.touchStartTime = Date.now()
 		ev.preventDefault()
 
@@ -267,7 +291,7 @@ class Drag {
 
 	onMove(ev) {
 		if (!this.dragging) return
-
+		if (document.getElementById('grid').style.display === 'none') return
 		ev = ev.type == 'touchmove' ? ev.touches[0] : ev
 
 		let xDelta = ev.clientX - this.lastX
@@ -319,7 +343,7 @@ class Drag {
 class InfiniteGrid {
 	constructor(nCol = 2, nRow = 2) {
 		this.grid = document.getElementById('grid')
-		this.container = document.getElementById('stories-container')
+		this.container = document.getElementById('stories-container--grid')
 		this.Drag = new Drag(this.container, this.onDrag.bind(this))
 		this.offsetX = 0
 		this.offsetY = 0
@@ -456,8 +480,8 @@ function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 130) {
 </script>
 
 <style is:global>
-	body.is-dragging .grid-item h2,
-	body.is-dragging .grid-item {
+	body.is-dragging .story-item h2,
+	body.is-dragging .story-item {
 		cursor: move;
 	}
 
@@ -466,7 +490,9 @@ function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 130) {
 		z-index: 9999 !important;
 	}
 
-	.stories-container {
+	/* Grid view styles */
+
+	.stories-container--grid {
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -476,7 +502,7 @@ function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 130) {
 		overflow: hidden;
 	}
 
-	.stories-container span {
+	.stories-container--grid span {
 		position: fixed;
 		z-index: 5000;
 		top: 0;
@@ -494,7 +520,7 @@ function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 130) {
 		overflow: hidden;
 	}
 
-	.grid-item {
+	#grid .story-item {
 		position: relative;
 		background: black;
 		background-size: cover;
@@ -507,7 +533,7 @@ function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 130) {
 		transform: scale(1);
 	}
 
-	.grid-item img {
+	#grid .story-item img {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -527,22 +553,22 @@ function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 130) {
 		opacity: 1;
 	}
 
-	.filter--read .grid-item:not([data-lastread='never']) {
+	#grid.filter--read .story-item:not([data-lastread='never']) {
 		opacity: 0.2;
 		/* transition: opacity 1s ease-out; */
 	}
 
-	.filter--read .grid-item:not([data-lastread='never']),
-	.filter--read .grid-item:not([data-lastread='never']) * {
+	#grid.filter--read .story-item:not([data-lastread='never']),
+	#grid.filter--read .story-item:not([data-lastread='never']) * {
 		pointer-events: none;
 	}
 
-	.filter--read .grid-item:not([data-lastread='never']):hover,
-	.filter--read .grid-item:not([data-lastread='never']):hover * {
+	#grid.filter--read .story-item:not([data-lastread='never']):hover,
+	#grid.filter--read .story-item:not([data-lastread='never']):hover * {
 		cursor: move;
 	}
 
-	.grid-item--title {
+	.story-item--title {
 		margin: 0;
 		box-decoration-break: clone;
 		font-size: 1.4rem;
@@ -552,45 +578,36 @@ function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 130) {
 		display: inline;
 	}
 
-	.language--ar .grid-item {
+	.language--ar .story-item {
 		direction: rtl;
 		text-align: right;
 	}
 
-	.language--ar .grid-item--title.lang--en {
+	.language--ar .story-item--title.lang--en {
 		display: none;
 	}
 
-	.language--en .grid-item--title.lang--ar {
+	.language--en .story-item--title.lang--ar {
 		display: none;
 	}
 
-	// Set text to be either right or left aligned for EN and AR
-	/* #grid.language--en .grid-item {
-		text-align: left;
-	}
-
-	#grid.language--ar .grid-item {
-		text-align: right;
+	/* .story-item--title {
+		color: red;
 	} */
 
-	.grid-item--title {
-		color: red;
-	}
-
 	@media screen and (min-width: 800px) {
-		.grid-item {
+		.story-item {
 			outline: 10px solid transparent;
 		}
 
-		body:not(.is-dragging) .grid-item:not(.filter--read):hover,
+		body:not(.is-dragging) #grid .story-item:not(.filter--read):hover,
 		body:not(.is-dragging) .grid-item[data-lastread='never']:hover {
 			transform: scale(1.05);
 			outline: 0.7rem solid white;
 			z-index: 9999;
 		}
 
-		body:not(.is-dragging) .filter--read .grid-item[data-lastread='never']:hover .grid-item--title {
+		body:not(.is-dragging) .filter--read .grid-item[data-lastread='never']:hover .story-item--title {
 			color: black;
 			background: white;
 		}
@@ -612,9 +629,30 @@ function optimalGridDimensions(minSide = window.innerWidth > 500 ? 200 : 130) {
 	}
 
 	@media screen and (max-width: 500px) {
-		.grid-item--title {
+		.story-item--title {
 			font-size: 1rem;
 			height: auto;
 		}
+	}
+
+	/* List view styles */
+
+	#list .story-item a {
+		pointer-events: auto;
+	}
+
+	#list.filter--read .story-item:not([data-lastread='never']) {
+		opacity: 0.2;
+		/* transition: opacity 1s ease-out; */
+	}
+
+	#list.filter--read .story-item:not([data-lastread='never']),
+	#list.filter--read .story-item:not([data-lastread='never']) * {
+		pointer-events: none;
+	}
+
+	#list.filter--read .story-item:not([data-lastread='never']):hover,
+	#list .filter--read .story-item:not([data-lastread='never']):hover * {
+		cursor: move;
 	}
 </style>

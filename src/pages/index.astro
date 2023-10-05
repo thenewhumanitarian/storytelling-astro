@@ -2,7 +2,7 @@
 import { ViewTransitions } from 'astro:transitions'
 
 import Layout from '../layouts/Layout.astro'
-import StoryGrid from '../components/StoryGrid.astro'
+import StoryWrapper from '../components/StoryWrapper.astro'
 
 import stories from '../data/stories.json'
 
@@ -23,7 +23,7 @@ shuffleArray(stories)
 	<ViewTransitions />
 
 	<div id='login' class='hidden'>
-		<Layout dark title='The Yemen Listening Project' header={false} filterButtons={true}>
+		<Layout dark title='The Yemen Listening Project' header={false} filterButtons={true} switchViewButtons={true} switchViewButtons={true}>
 			<div class='flex h-screen h-screen-ios w-full absolute justify-center items-center text-white flex-col'>
 				<h1 class='text-xl sm:text-4xl'>The Yemen Listening Project</h1>
 				<p class='mt-1 px-2 py-1 bg-white text-black font-bold text-base'>Coming soon...</p>
@@ -49,8 +49,8 @@ shuffleArray(stories)
 		</Layout>
 	</div>
 	<div class='hidden' id='content' transition:persist>
-		<Layout dark title='The Yemen Listening Project' header={true} filterButtons={true} languageButtons={true}>
-			<StoryGrid stories={stories} transition:persist />
+		<Layout dark title='The Yemen Listening Project' header={true} filterButtons={true} languageButtons={true} switchViewButtons={true}>
+			<StoryWrapper stories={stories} transition:persist />
 		</Layout>
 	</div>
 </>
