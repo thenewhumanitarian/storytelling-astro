@@ -10,7 +10,7 @@ const { stories } = Astro.props
 	{
 		stories.map((story, i) => {
 			return (
-				<a href={`/stories/${story.slug}`} class={`flex justify-start items-center gap-x-3 story-item p-5 ${i % 2 === 0 ? 'bg-gray-800' : ''}`} data-slug={story.slug}>
+				<a href={`/stories/${story.slug}`} class={`flex justify-start items-center gap-x-3 story-item p-3 sm:p-5 ${i % 2 === 0 ? 'bg-gray-800' : ''}`} data-slug={story.slug}>
 					{story.image.fileName && <img src={`/downloaded_images/thumbnails/${story.image.fileName}`} alt={story.title} class='w-14 h-14' /> }
 					<h3 class='story-item--title lang--ar text-white m-0'>{story.titles['ar']}</h3>
 					<h3 class='story-item--title lang--en text-white m-0'>{story.titles['en']}</h3>
